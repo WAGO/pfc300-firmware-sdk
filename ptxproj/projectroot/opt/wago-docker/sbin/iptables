@@ -1,0 +1,60 @@
+#!/bin/bash
+
+#-----------------------------------------------------------------------------#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+# Copyright (c) 2019-2022 WAGO GmbH & Co. KG
+#-----------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------#
+# Script:   docker iptables replacement
+#
+# Brief:    WAGO iptables script to mirror all changes to iptables done by
+#           by dockerd to iptables.
+#           
+#           This script mirrors changes to iptables to create a backup, because 
+#           rules are flushed on some network events. If iptables calls are
+#           are made for a non-root namespace, only /sbin/iptables is executed.
+#           (docker calls the iptables binary in conjuction with netns to create 
+#            e.g. nat-rules for dns-resolution within containers)
+#
+# Author:   Fabian Schwamborn, WAGO GmbH & Co. KG
+#-----------------------------------------------------------------------------#
+
+in_array()
+{
+  local needle="$1"
+  local haystack="$2"
+
+  for blade_of_grass in $haystack; do
+    [[ "$blade_of_grass" == "$needle" ]] && return 0
+  done
+
+  return 1
+}
+
+add_wait=''
+if ! in_array "--wait" "${*}"; then
+  add_wait='--wait'
+fi
+
+# correct path, otherwise this script calls itself recursively!
+IPTABLES_BIN="/sbin/iptables"
+
+NETNS_PATH="/var/run/netns"
+DOCKER_IPT_NAMESPACE="WAGO_DOCKER_IPT"
+NAMESPACE_ROOT="/proc/1/ns/net"
+NAMESPACE_SELF="/proc/self/ns/net"
+
+# execute command on iptables
+"$IPTABLES_BIN" "${@}"
+RET=$?
+
+# check if namespace is available and if this script is not running in a namespace
+if test -e $NETNS_PATH"/"$DOCKER_IPT_NAMESPACE && test $(readlink $NAMESPACE_ROOT) = $(readlink $NAMESPACE_SELF); then
+    # create shadow copy of iptables entry
+    ip netns exec "$DOCKER_IPT_NAMESPACE" "$IPTABLES_BIN" "${@}"  >/dev/null 2>&1
+fi
+
+exit $RET

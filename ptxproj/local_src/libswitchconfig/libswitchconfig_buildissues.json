@@ -1,0 +1,15 @@
+{
+  "_class": "io.jenkins.plugins.analysis.core.restapi.ReportApi",
+  "issues": [
+    {
+      "fileName": "pfc/ptxproj/local_src/libswitchconfig/src/util/iptool.cpp",
+      "lineStart": "32",
+      "columnStart": "6",
+      "category": "Warning:missing-declarations",
+      "severity": "NORMAL",
+      "message": "no previous declaration for ‘void wago::libswitchconfig::from_json(const json&, wago::libswitchconfig::system_port&)’ [-Wmissing-declarations]",
+      "moduleName": "libswitchconfig-tests"
+    }
+  ],
+  "size": 1
+}

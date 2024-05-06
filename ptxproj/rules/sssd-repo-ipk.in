@@ -1,0 +1,8 @@
+## SECTION=wago_specific
+
+config SSSD_REPO_IPK
+	tristate
+	select SSSD
+	prompt "sssd-repo-ipk"
+	help
+	  FIXME

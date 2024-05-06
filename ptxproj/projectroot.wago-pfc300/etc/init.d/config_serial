@@ -1,0 +1,77 @@
+#!/bin/sh
+
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+# Copyright (c) 2018-2022 WAGO GmbH & Co. KG
+
+SETTINGS_FILE="/etc/specific/serial.conf"
+
+#
+# config_rs232 
+#
+# Function to switch current termination_resistor to configured setting.
+# Return: 0 on success, unequal to 0 otherwise
+update_current_termination_resistor()
+{
+	local termination_resistor_value="$(grep "termination_resistor" $SETTINGS_FILE | cut -d= -f2)"
+	/etc/config-tools/config_serial_interface -s termination_resistor=$termination_resistor_value
+}
+#
+# Function to switch current bias network to configured setting.
+# Return: 0 on success, unequal to 0 otherwise
+update_current_bias_network()
+{
+	local bias_network_value="$(grep "bias_network" $SETTINGS_FILE | cut -d= -f2)"
+	/etc/config-tools/config_serial_interface -s bias_network=$bias_network_value
+}
+
+# config_rs232 edits the config files to set the serial interface owner
+# according to the /etc/config-tools/owner-RS232 file which can be
+# changed via wbm or config-tools
+
+if [[ ! -f "/etc/config-tools/RS232_OWNER" ]]; then
+  echo "Error: /etc/config-tools/RS232-OWNER not found."
+  exit 1
+fi
+
+case $1 in
+
+  start)
+    # RS232 settings are stored partially in the EEPROM (UART bit) and partially
+    # in the firmware (RS232_OWNER file).
+    # When the settings are made but not applied before another firmware with a different RS232_OWNER
+    # file is used (i.e. from a backup), an inconsistent state occurs. 
+
+    # With the if-clause below we detect this case and fix the inconsistency.
+    
+    if [[ "$(eeprom-xsection -R -h | awk '/use serial console/ {print $5}')" == "no" ]] && \
+       [[ "$(cat /etc/config-tools/RS232_OWNER)" != "None" ]]; then
+
+       echo "None" > /etc/config-tools/RS232_OWNER
+    elif [[ "$(eeprom-xsection -R -h | awk '/use serial console/ {print $5}')" == "yes" ]] && \
+         [[ "$(cat /etc/config-tools/RS232_OWNER)" != "Linux" ]]; then
+       
+       echo "Linux" > /etc/config-tools/RS232_OWNER
+  
+    fi
+
+    rs232_owner=$(cat /etc/config-tools/RS232_OWNER)
+
+    echo -n "setting RS232 owner to $rs232_owner..."
+
+    if [ -e "$SETTINGS_FILE" ]; then
+       update_current_termination_resistor
+       update_current_bias_network
+    fi
+
+    if /etc/config-tools/config_RS232 start; then
+      echo "done"
+    else
+      echo "ERROR"
+    fi
+  ;;
+  stop)
+  ;;
+esac

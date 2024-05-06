@@ -1,0 +1,21 @@
+			Switch Configuration Utility
+			----------------------------
+Introduction
+------------
+Switch-config is user space utility to configure the DM814x, AM387x CPSW 3 Port
+switch with various combination of ALE entry and Phy configuration
+
+how to compile
+--------------
+	make help
+
+Switch configuration commands
+-----------------------------
+For help run the below command
+	switch-config --help
+
+Version
+-------
+For switch-config versions run the below command
+	switch-config --version
+

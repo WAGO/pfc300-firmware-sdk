@@ -1,7 +1,7 @@
 ARG REGISTRY_PREFIX='wagoautomation/'
 ARG SDK_BUILDER_VERSION='3.0.0'
 
-FROM ${REGISTRY_PREFIX}sdk-builder:${SDK_BUILDER_VERSION} as pfc300-firmware-sdk
+FROM ${REGISTRY_PREFIX}sdk-builder:${SDK_BUILDER_VERSION} AS pfc300-firmware-sdk
 
 
 ARG USERID

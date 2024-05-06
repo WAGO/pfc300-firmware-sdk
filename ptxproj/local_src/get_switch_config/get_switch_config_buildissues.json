@@ -1,0 +1,15 @@
+{
+  "_class": "io.jenkins.plugins.analysis.core.restapi.ReportApi",
+  "issues": [
+    {
+      "fileName": "local_src/get_switch_config/test-src/version_validation_test.cpp",
+      "lineStart": "33",
+      "columnStart": "1",
+      "category": "Warning:clang-diagnostic-deprecated-declarations",
+      "severity": "NORMAL",
+      "message": "'InstantiateTestCase_P_IsDeprecated' is deprecated: INSTANTIATE_TEST_CASE_P is deprecated, please use INSTANTIATE_TEST_SUITE_P [clang-diagnostic-deprecated-declarations]",
+      "moduleName": "get_switch_config-tests"
+    }
+  ],
+  "size": 1
+}

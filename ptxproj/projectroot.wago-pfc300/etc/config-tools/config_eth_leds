@@ -1,0 +1,65 @@
+#!/bin/bash
+
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+# Copyright (c) 2018-2023 WAGO GmbH & Co. KG
+
+function log
+{
+    /usr/bin/logger -s -t config_eth_leds "$@"
+    exit 1
+}
+
+SYSFS=/sys/class/leds
+
+ETHX_1_GREEN=$SYSFS/8000f00.mdio:01:green:lan
+ETHX_1_YELLOW=$SYSFS/8000f00.mdio:01:yellow:lan
+ETHX_2_GREEN=$SYSFS/8000f00.mdio:00:green:lan
+ETHX_2_YELLOW=$SYSFS/8000f00.mdio:00:yellow:lan
+
+function config_led_green
+{
+  local p=$1
+
+  echo netdev > $p/trigger || log "error: setting trigger netdev failed"
+  
+  echo 0 > $p/full_duplex
+  echo 0 > $p/half_duplex
+  echo 0 > $p/link
+  echo 0 > $p/link_10
+  echo 0 > $p/link_100
+  echo 0 > $p/rx
+  echo 0 > $p/tx
+
+  echo 1 > $p/link_1000
+}
+
+function config_led_yellow
+{
+  local p=$1
+  
+  echo netdev > $p/trigger || log "error: setting trigger netdev failed"
+
+  echo 0 > $p/full_duplex
+  echo 0 > $p/half_duplex
+  echo 0 > $p/link_10
+  echo 0 > $p/link_100
+  echo 0 > $p/link_1000
+
+  echo 1 > $p/rx
+  echo 1 > $p/tx
+  echo 1 > $p/link
+}
+
+[ -e "$ETHX_2_GREEN" ] || log "error" "$ETHX_2_GREEN does not exist"
+[ -e "$ETHX_2_YELLOW" ] || log "error" "$ETHX_2_YELLOW does not exist"
+[ -e "$ETHX_1_GREEN" ] || log "error" "$ETHX_1_GREEN does not exist"
+[ -e "$ETHX_1_YELLOW" ] || log "error" "$ETHX_1_YELLOW does not exist"
+    
+config_led_green $ETHX_1_GREEN
+config_led_green $ETHX_2_GREEN
+
+config_led_yellow $ETHX_1_YELLOW
+config_led_yellow $ETHX_2_YELLOW

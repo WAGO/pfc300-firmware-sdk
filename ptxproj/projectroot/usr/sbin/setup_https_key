@@ -1,0 +1,51 @@
+#!/bin/sh
+
+# Modulus of the non-unique weak default cert
+MODULUS="Modulus=C74B4801AFCCCC97E2727066DC3B076B1BE3A3714E4D9D4D20DC04B1E44AF852007EC1CD238CE019271152E408F636C089B993E9E2B344EDA74821C65FBEE0126B68A15FD7C6E9B72D98C41CCCC6B8F60E06130AB9433C80C5628857F77EAA41E400E5266C38D18D773EBAEB8FC57EAD15FA82BEB4629EDD856AD3FAF8FC1898BBA99D38EE0D0709B782EC73C6915C5FA991B8801DECFB422B7E493B30D9C6ED31FE8F3473E3F9330EF00A21B26BFAE3F55A89C65480E7CA289A8821DFB759550B7AB68111A7D8E344832400B750450B9148A64FB328BDA650F3C487D70C28C05A39C753BF4E3E85F429828F0162D5281C8098527F67985733F514B5438AE2688721EE9E37B28DA3A6B77E156C7F65E20B5357E8F5CE50D19EC0514812D746093B3B7C2727F0FBAA4E0A450A3B544FCC8925BFA5AF98F3EC7B1B0072C7B7D6D76379BC31B60C281FA4D05B60A12CEEAF1737CF60C6D05B1AE67D0B47DFADA9DBF2472033E6E9CCAAEB138107EF2656007C8B6B84E002CBC07F89664BD12F9EB7"
+
+LIGHTTPD_CERT="/etc/lighttpd/https-cert.pem"
+CERT_CONF="/etc/lighttpd/openssl-cert.conf"
+
+# Only Update the weak default cert
+[ "$(openssl x509 -noout -modulus < "$LIGHTTPD_CERT")" = "$MODULUS" ] || exit 0
+
+eval "$(/etc/config-tools/get_typelabel_value -a | sed "s/=/='/;s/\$/'/")"
+
+cat > "$CERT_CONF" << EOF
+# This template can be used to re-generate the HTTPS cert
+# or to generate a request to be issued by a CA
+[ req ]
+default_bits = 3072
+distinguished_name = dn
+x509_extensions = extensions
+string_mask = MASK:0x2002
+utf8 = yes
+prompt = no
+
+[ dn ]
+0.C=DE
+1.ST=Germany
+2.CN=$SYSDESC
+3.O=Wago GmbH & Co. KG
+4.L=Minden
+5.emailAddress=info@wago.com
+6.pseudonym=$MAC
+
+[ extensions ]
+nsCertType=server
+subjectAltName=IP:192.168.1.1
+extendedKeyUsage=serverAuth
+keyUsage=digitalSignature, nonRepudiation, keyEncipherment, keyAgreement, keyCertSign
+subjectKeyIdentifier=hash
+basicConstraints=critical,CA:FALSE
+EOF
+
+set -e
+
+/usr/sbin/random_seed
+
+umask 0266
+openssl req -x509 -nodes -new -config "$CERT_CONF" > "${LIGHTTPD_CERT}.tmp" &&
+mv "${LIGHTTPD_CERT}.tmp" "${LIGHTTPD_CERT}"
+
+exec sync

@@ -1,0 +1,10 @@
+Firmware Release 04.05.10 (27) – CODESYS 3
+
+Engineering by CODESYS IDE V. 3.5 is supported
+Engineering by e!COCKPIT IDE is not supported
+CODESYS 2.3 is not supported
+
+Migration Guide – from e!COCKPIT to CODEYS V3.5:
+• https://techdocs.wago.com/Software/eCOCKPIT_Migration/en-US/index.html#index_content
+
+Initial Release

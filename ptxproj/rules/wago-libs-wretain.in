@@ -1,0 +1,45 @@
+## SECTION=wago_specific_libs
+
+comment "wretain: libnvram is selected! Both solutions are mutually exclusive!"
+	depends on LIBNVRAM
+
+comment "wretain: retain_data is selected! Both solutions are mutually exclusive!"
+	depends on RETAIN_DATA
+
+config WRETAIN
+	bool
+	prompt "wretain"
+	select BOOST
+	select GSL
+	select HOST_CMAKE
+	select GOOGLETEST
+	select LIBUIO
+	help
+	  Retain Variables CODESYS implementation (library and command line management tool) for PFC controller family.
+
+if WRETAIN
+
+choice
+	prompt "wretain hardware link type."
+
+	default WRETAIN_LINK_TYPE_DIRECT
+
+	config WRETAIN_LINK_TYPE_DIRECT
+	bool
+	prompt "direct"
+	help
+	  Direct variant should be selected for platforms with direct, GPMC-NVRAM hardware connection.
+
+	config WRETAIN_LINK_TYPE_SERIAL
+	bool
+	prompt "serial"
+	help
+	  Serial variant should be selected for platforms with serial, SPI-NVRAM hardware connection.
+endchoice
+
+config WRETAIN_BUILD_TESTING
+	bool
+	prompt "Build unit tests of wretain project."
+	default n
+
+endif

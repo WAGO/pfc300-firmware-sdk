@@ -1,0 +1,398 @@
+#!/bin/bash
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+# Copyright (c) 2012-2022 WAGO GmbH & Co. KG
+
+#-----------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------#
+# Script:   /etc/config-tools/config_ssl
+#
+# Brief:    Manage http[s]and ftp[s] settings.
+#
+# Author:   AGa: WAGO GmbH & Co. KG
+# Author:   HJH: WAGO GmbH & Co. KG
+# Author:   PEn: WAGO GmbH & Co. KG
+#-----------------------------------------------------------------------------#
+
+# load general definitions and functions
+if [ ! -f "/etc/config-tools/config_tool_lib" ]; then
+  echo "config_tool_lib missing"
+  exit 255
+fi
+
+. /etc/config-tools/config_tool_lib
+
+function StartService
+{
+  $startSkript start >&/dev/null
+  ln -sf $startSkript $link
+}
+
+function StopService
+{
+  $startSkript stop >&/dev/null
+  rm -f $link
+}
+
+function RestartService
+{
+  $startSkript stop >&/dev/null
+  sleep 1
+  $startSkript start >&/dev/null
+}
+
+LIGHTTPD_CONFIG_HTTPS_ONLY=./mode_https.conf
+LIGHTTPD_CONFIG_HTTP_HTTPS=./mode_http+https.conf
+
+function ChangeConfigLighttpd
+{
+  local newMode=$1
+
+  case "$newMode" in
+    ssl_on)
+      cd /etc/lighttpd && sudo ln -sf $LIGHTTPD_CONFIG_HTTP_HTTPS ./mode.conf
+      ;;
+    ssl_only)
+      cd /etc/lighttpd && sudo ln -sf $LIGHTTPD_CONFIG_HTTPS_ONLY ./mode.conf
+      ;;
+  esac
+  RestartService
+}
+
+function ChangeConfigPureftpd
+{
+  local newMode=$1
+
+  case "$newMode" in
+    ssl_off)
+      sed -i 's/^TLS.*/TLS=0/' $configFile
+      ;;
+    ssl_on)
+      sed -i 's/^TLS.*/TLS=1/' $configFile
+      ;;
+    ssl_only)
+      sed -i 's/^TLS.*/TLS=2/' $configFile
+      ;;
+  esac
+
+}
+
+###################### MAIN ############################
+
+# show help-text if requested
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+  echo
+  echo "Manage http/https* and ftp/ftps settings."
+  echo
+  echo "Note:  HTTPS can not be disabled."
+  echo "       Block HTTPS via the firewall if needed."
+  echo
+  echo "Usage: $0 <command>"
+  echo
+  echo "Available commands:"
+  echo "  <enable-http|disable-http>"
+  echo "  <http-status|https-status>"
+  echo "  <enable-ftp|disable-ftp|enable-ftps|disable-ftps>"
+  echo "  <ftp-status|ftps-status>"
+  echo
+  echo "Status format is \"enabled\" or \"disabled\""
+  echo
+  exit $status
+fi
+
+status=$SUCCESS
+
+case "$1" in
+  *http*)
+    startSkript="/etc/init.d/lighttpd"
+    MODE="http"
+    ;;
+  *ftp*)
+    link="/etc/rc.d/S09_pureftpd"
+    exe=$FTP_EXE
+    startSkript="/etc/init.d/pureftpd"
+    configFile="/etc/pure-ftpd.conf"
+    MODE="ftp"
+    ;;
+esac
+
+#
+# find out the current configuration
+#
+
+#
+# ssl_off:  ssl not active
+# ssl_on:   ssl active, unencrypted connections accepted
+# ssl_only: ssl active, encrypted connections only
+#
+
+if [[ "$MODE" == "http" ]]; then
+
+  case "$(basename $(readlink /etc/lighttpd/mode.conf))" in
+    $(basename $LIGHTTPD_CONFIG_HTTPS_ONLY))
+      currentState="ssl_only.running"
+      ;;
+    $(basename $LIGHTTPD_CONFIG_HTTP_HTTPS))
+      currentState="ssl_on.running"
+      ;;
+    *)
+      exit $CONFIG_FILE_INCONSISTENT
+      ;;
+  esac
+elif [[ "$MODE" == "ftp"  ]]; then 
+  . $configFile
+
+  case "$TLS" in
+    0)
+     currentState="ssl_off"
+     ;;
+    1) 
+     currentState="ssl_on" 
+     ;;
+    2) 
+     currentState="ssl_only" 
+     ;;
+    *) 
+     exit $CONFIG_FILE_INCONSISTENT
+     ;;
+  esac
+
+  #
+  # is the service running? append running/stopped to state name
+  #
+  pidof $exe > /dev/null
+  if [[ "$?" == "0" ]]; then
+    currentState=${currentState}.running
+  else
+    currentState=${currentState}.stopped
+  fi
+fi
+
+#
+# is the parameter a valid action?
+# if asking for status, return it and exit
+#
+#action=$(GetParameterValue action $*)
+action=$1
+case "$action" in
+  enable-http|enable-ftp);;
+  disable-http|disable-ftp);;
+  enable-ftps);;
+  disable-ftps);;
+
+#### GET CURRENT STATUS ################
+
+  http-status|ftp-status)
+
+    case "$currentState" in
+      *stopped|ssl_only.running)
+        echo "disabled"
+        exit $SUCCESS
+      ;;
+      ssl_off.running|ssl_on.running)
+        echo "enabled"
+        exit $SUCCESS
+      ;;
+    esac
+
+  ;;
+  https-status|ftps-status)
+
+    case "$currentState" in
+     *stopped|ssl_off.running)
+        echo "disabled"
+        exit $SUCCESS
+      ;;
+      ssl_on.running|ssl_only.running)
+        echo "enabled"
+        exit $SUCCESS
+      ;;
+    esac
+
+  ;;
+
+##############################
+  *) exit $INVALID_PARAMETER;;
+esac
+
+
+#
+# Main FSM for config changes:
+# 6 states: ssl_off.{running,stopped},
+#           ssl_on.{running,stopped},
+#           ssl_only.{running,stopped}
+# only 2 states for http[s]: ssl_on.running
+#                            ssl_only.running
+#
+case "$currentState" in
+
+  ssl_off.stopped)
+
+    case "$action" in
+
+      enable-ftp)
+        StartService
+      ;;
+      disable-ftp)
+        # nothing to do
+      ;;
+      enable-ftps)
+        ChangeConfigPureftpd "ssl_only"
+        StartService
+      ;;
+      disable-ftps)
+        #nothing to do
+      ;;
+
+    esac
+
+    ;;
+    
+##############################################
+
+  ssl_off.running)
+    case "$action" in
+
+      enable-ftp)
+        # nothing to do
+      ;;
+      disable-ftp)
+        StopService
+      ;;
+      enable-ftps)
+        ChangeConfigPureftpd "ssl_on"
+        RestartService
+      ;;
+      disable-ftps)
+        # nothing to do
+      ;;
+
+    esac
+
+ ;;
+
+##############################################
+  
+  ssl_only.stopped)
+  
+    case "$action" in
+
+      enable-ftp)
+        ChangeConfigPureftpd "ssl_off"
+        StartService
+      ;;
+      disable-ftp)
+        # nothing to do
+      ;;
+      enable-ftps)
+        StartService
+      ;;
+      disable-ftps)
+        #nothing to do
+      ;;
+
+    esac
+
+  ;;
+
+##############################################
+  
+  ssl_only.running)
+  
+    case "$action" in
+
+      enable-ftp)
+        ChangeConfigPureftpd "ssl_on"
+        RestartService
+      ;;
+      enable-http)
+        ChangeConfigLighttpd "ssl_on"
+      ;;
+      disable-*tp)
+        # nothing to do
+      ;;
+      enable-ftps)
+        # nothing to do
+      ;;
+      disable-ftps)
+        StopService
+      ;;
+
+    esac
+
+  ;;
+
+##############################################
+  
+  ssl_on.stopped)
+  # Should never happen with wbm/ipcconfig:
+  # Transition from running to stopped is impossible but
+  # from {http,https}_only states
+  # Possible use-case when used manually via command line
+  
+    case "$action" in
+
+      enable-ftp)
+        ChangeConfigPureftpd "ssl_off"
+        StartService
+      ;;
+      disable-ftp)
+        # nothing to do
+      ;;
+      enable-ftps)
+        ChangeConfigPureftpd "ssl_only"
+        StartService
+      ;;
+      disable-ftps)
+        # nothing to do
+      ;;
+
+    esac
+  ;;
+
+##############################################
+
+  ssl_on.running)
+  
+    case "$action" in
+
+      enable-*tp)
+        # nothing to do
+      ;;
+      disable-ftp)
+        ChangeConfigPureftpd "ssl_only"
+        RestartService
+      ;;
+      disable-http)
+        ChangeConfigLighttpd "ssl_only"
+      ;;
+      enable-ftps)
+        # nothing to do
+      ;;
+      disable-ftps)
+        ChangeConfigPureftpd "ssl_off"
+        RestartService
+      ;;
+
+    esac
+  ;;
+
+##############################################
+
+esac
+sync
+
+case "$1" in
+  *status)
+    ;;
+  *http*)
+    [[ -d /etc/config-tools/events/ssl/ ]] && run-parts -a config -a http /etc/config-tools/events/ssl/
+    ;;
+  *ftp*)
+    [[ -d /etc/config-tools/events/ssl/ ]] && run-parts -a config -a ftp /etc/config-tools/events/ssl/
+    ;;
+esac
+
+exit $status

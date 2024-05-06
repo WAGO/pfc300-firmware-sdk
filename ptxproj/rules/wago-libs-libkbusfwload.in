@@ -1,0 +1,12 @@
+## SECTION=wago_specific_libs
+
+config LIBKBUSFWLOAD
+	bool
+	select HOST_CT_BUILD
+	select GOOGLETEST
+	select FFF
+	select ZLIB
+	select LIBCOMMONHEADER
+	prompt "libkbusfwload"
+	help
+	  Library for updating fw binary blob in kbus slave cpu

@@ -1,0 +1,23 @@
+## SECTION=image
+
+menuconfig KERNEL_FIT_PRODUCTION
+	tristate
+	select KERNEL
+	select HOST_U_BOOT_TOOLS
+	select HOST_DTC
+	select CODE_SIGNING	if KERNEL_FIT_PRODUCTION_SIGNED
+	prompt "Generate images/linuximage-production.fit"
+	help
+	  Generate a FIT image from the kernel image. This will contain
+	  the Kernel image and all device trees in PTXCONF_DTC_OFTREE_DTS.
+	  Configurations are provided for each device tree together with
+	  the Kernel image.
+
+if KERNEL_FIT_PRODUCTION
+
+config KERNEL_FIT_PRODUCTION_SIGNED
+	bool
+	prompt "sign FIT image"
+	help
+	  If enabled a signed FIT image will be generated.
+endif

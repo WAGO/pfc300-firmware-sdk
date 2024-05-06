@@ -62,9 +62,9 @@ If you prefer to build the sdk-builder image manually follow instruction provide
 ## Installation and building STEP-BY-STEP:
 
 ### 1.) Check out the correct release
-We provide one tag for each firmware(FW) release. You can download specific FW versions in the release section. Alternatively you may use git to clone the repository.  
+We provide one tag for each firmware(FW) release. You can download specific FW versions in the release section. Alternatively you may use git to clone the repository.
 
-    git clone git@github.com:WAGO/pfc-firmware-sdk-G2.git && cd pfc-firmware-sdk-G2
+    git clone git@github.com:WAGO/pfc300-firmware-sdk.git && cd pfc300-firmware-sdk
 
 Afterward you can checkout a specific release.
 
@@ -80,9 +80,9 @@ Afterward you can checkout a specific release.
 
 Alternatively you can also run pfc-builder in bash mode (```make bash```) and enter the following commands.
 
-    ptxdist select configs/wago-pfcXXX/ptxconfig_pfc_g2 && \ 
-    ptxdist platform configs/wago-pfcXXX/platformconfig && \      
-    ptxdist toolchain /opt/gcc-Toolchain-2022.08/LINARO.Toolchain-2022.08/arm-linux-gnueabihf/bin/ && \
+    ptxdist select configs/wago-pfc300/ptxconfig_pfc && \ 
+    ptxdist platform configs/wago-pfc300/platformconfig && \      
+    ptxdist toolchain /opt/gcc-Toolchain-2022.08-wago.1/LINARO.Toolchain-2022.08-wago.1/aarch64-linux-gnu/bin && \
     ptxdist clean -q
     
 #### 3.1) Get and download all packages

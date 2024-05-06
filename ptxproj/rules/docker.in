@@ -1,0 +1,35 @@
+## SECTION=applications
+
+config DOCKER
+	bool
+	default n
+	select RUNC
+	select CONTAINERD
+	select TINI
+	select DOCKER_USERLAND_PROXY
+	select ROOTLESSKIT
+	select DOCKER_CLI
+	select DOCKERD
+	prompt "docker"
+	help
+	  selects all docker dependencies and bundels them in an xz archive
+
+if DOCKER
+
+config DOCKER_INSTALL_TO_HOMEDIR
+	bool
+	depends on DOCKER
+	default y
+	prompt "install docker to home directory (instead of root fs)"
+
+endif
+
+if DOCKER
+
+config DOCKER_ACTIVATE_ON_FIRST_BOOT
+	bool
+	depends on DOCKER
+	default n
+	prompt "activate docker on first boot"
+
+endif

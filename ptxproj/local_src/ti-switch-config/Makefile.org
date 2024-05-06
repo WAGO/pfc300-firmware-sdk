@@ -1,0 +1,47 @@
+# Makefile for switch-config
+
+CC		=	$(CROSS_COMPILE)gcc
+KBUILD_OUTPUT	?=	/lib/modules/$(shell uname -r)/build
+CFLAGS		=	-I$(KBUILD_OUTPUT)/usr/include
+
+GIT_VERSION := $(shell git describe --dirty --always)
+RM = rm -f
+CFLAGS+= -Wall -DVERSION=\"$(GIT_VERSION)\"
+LDFLAGS+=
+
+$(info $(CC))
+
+PATH_TO_FILE := ""
+
+ifeq ("$(wildcard $(PATH_TO_FILE))","")
+    CFLAGS+= -DUSE_LOCAL_INC
+    PATH_TO_FILE := ./net_switch_config.h
+endif
+
+NEW_API := $(shell cat $(PATH_TO_FILE) | grep -w SWITCH_INVALID)
+ifeq ($(NEW_API),)
+    CFLAGS+= -DUSE_OLD_API
+endif
+
+PROG = switch-config
+SRCS = switch-config.c
+
+OBJS = $(SRCS:.c=.o)
+
+HDRS =
+
+.c.o:
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+all: $(PROG)
+
+$(PROG): $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $(OBJS)
+
+$(OBJS): $(HDRS)
+
+clean:
+	$(RM) $(PROG) $(OBJS)
+
+help:
+	@echo "make CROSS_COMPILE=arm-linux-gnueabihf- KBUILD_OUTPUT=<Kernel Directory>"

@@ -1,0 +1,16 @@
+## SECTION=wago_specific_config
+
+config PCAP_LOG
+	bool
+	select HOST_CT_BUILD
+	select GOOGLETEST
+	select LIBPCAP
+	select LIBCURL
+	select NLOHMANN_JSON
+	select NETCONFD
+	select GLIB
+	select CONFIG_TOOL_BASE
+	select CONFIG_TOOLS
+	prompt "pcap_log"
+	help
+	  FIXME

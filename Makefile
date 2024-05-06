@@ -22,39 +22,39 @@ $(GEN_DIRS):
 	mkdir -p $@
 
 .PHONY: builder
-builder: $(OUT_DIR)/pfc-builder
+builder: $(OUT_DIR)/pfc300-builder
 
-$(OUT_DIR)/pfc-builder: Dockerfile docker/build.sh Makefile | $(OUT_DIR)
-	docker build $(DOCKER_BUILDFLAGS) --iidfile $@ --file $< --tag pfc-builder docker
+$(OUT_DIR)/pfc300-builder: Dockerfile docker/build.sh Makefile | $(OUT_DIR)
+	docker build $(DOCKER_BUILDFLAGS) --iidfile $@ --file $< --tag pfc300-builder docker
 
 .PHONY: bash
 bash: builder | $(PTXPROJ)
-	docker run --rm -it --user "$(USERID)" -v "$(PTXPROJ_PATH):/home/user/ptxproj" pfc-builder bash
+	docker run --rm -it --user "$(USERID)" -v "$(PTXPROJ_PATH):/home/user/ptxproj" pfc300-builder bash
 
 .PHONY: get
 get: builder | $(PTXPROJ)
-	docker run --rm -it --user "$(USERID)" -v "$(PTXPROJ_PATH):/home/user/ptxproj" pfc-builder build get
+	docker run --rm -it --user "$(USERID)" -v "$(PTXPROJ_PATH):/home/user/ptxproj" pfc300-builder build get
 
 .PHONY: offline-get
 offline-get: builder | $(PTXPROJ)
-	docker run --rm -i --network none --user "$(USERID)" -v "$(PTXPROJ_PATH):/home/user/ptxproj" pfc-builder build get
+	docker run --rm -i --network none --user "$(USERID)" -v "$(PTXPROJ_PATH):/home/user/ptxproj" pfc300-builder build get
 
 .PHONY: init
 init: builder | $(PTXPROJ)
-	docker run --rm -i --user "$(USERID)" -v "$(PTXPROJ_PATH):/home/user/ptxproj" pfc-builder build init
+	docker run --rm -i --user "$(USERID)" -v "$(PTXPROJ_PATH):/home/user/ptxproj" pfc300-builder build init
 
 .PHONY: build
 build: builder | $(PTXPROJ)
-	docker run --rm -it --user "$(USERID)" -v "$(PTXPROJ_PATH):/home/user/ptxproj" pfc-builder build
+	docker run --rm -it --user "$(USERID)" -v "$(PTXPROJ_PATH):/home/user/ptxproj" pfc300-builder build
 
 .PHONY: offline-build
 offline-build: builder | $(PTXPROJ)
-	docker run --rm -it --network none --user "$(USERID)" -v "$(PTXPROJ_PATH):/home/user/ptxproj" pfc-builder build
+	docker run --rm -it --network none --user "$(USERID)" -v "$(PTXPROJ_PATH):/home/user/ptxproj" pfc300-builder build
 
 .PHONY: images
 images: builder | $(PTXPROJ)
-	docker run --rm -it --network none --user "$(USERID)" -v "$(PTXPROJ_PATH):/home/user/ptxproj" pfc-builder build images
+	docker run --rm -it --network none --user "$(USERID)" -v "$(PTXPROJ_PATH):/home/user/ptxproj" pfc300-builder build images
 
 .PHONY: wup
 wup: builder | $(PTXPROJ)
-	docker run --rm -it --network none --user "$(USERID)" -v "$(PTXPROJ_PATH):/home/user/ptxproj" pfc-builder build wup
+	docker run --rm -it --network none --user "$(USERID)" -v "$(PTXPROJ_PATH):/home/user/ptxproj" pfc300-builder build wup

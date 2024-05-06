@@ -1,0 +1,4 @@
+
+SUBSYSTEM=="net", ACTION=="add", ATTR{phys_switch_id}=="0000000008000000", ATTR{phys_port_name}=="p2", NAME="ethX1"
+
+SUBSYSTEM=="net", ACTION=="add", ATTR{phys_switch_id}=="0000000008000000", ATTR{phys_port_name}=="p1", NAME="ethX2"

@@ -2,6 +2,8 @@
 /docker/certs/*.crt
 /ptxproj/**/bin/gcc_*_*_arm-linux-gnueabihf/
 /ptxproj/**/out/gcc_*_*_arm-linux-gnueabihf/
+/ptxproj/**/bin/gcc_*_*_aarch64-linux-gnu/
+/ptxproj/**/out/gcc_*_*_aarch64-linux-gnu/
 /ptxproj/configs/*/*.old
 /ptxproj/local_src/**/*.o
 /ptxproj/local_src/**/*.so

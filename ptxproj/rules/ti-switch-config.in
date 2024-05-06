@@ -1,0 +1,9 @@
+## SECTION=wago_specific_tools
+
+config TI_SWITCH_CONFIG
+	bool
+	prompt "ti-switch-config"
+	select HOST_CT_BUILD
+	select KERNEL_HEADER
+	help
+	  Switch config commandline tool for ti cpsw switches

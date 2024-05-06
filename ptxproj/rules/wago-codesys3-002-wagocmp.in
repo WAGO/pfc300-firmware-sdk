@@ -1,0 +1,516 @@
+## SECTION=wago_specific_codesys_3_wagocmp
+
+config CDS3_INCLUDES
+	bool
+	default n
+	select CODESYS3
+
+config CDS3_IODRVDAL
+	bool "DAL"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	select DAL
+	select LIBOSLINUX
+	select LIBCOMMONHEADER
+	select FFF
+	select CDS3_TSCEXTTASK
+	help
+		Builds and installs the DAL device Driver.
+
+menu "Codesys 3 Configuration Libraries"
+
+
+config CDS3_IODRVKBUS
+	bool "Io Driver Kbus"
+	default n
+	select LIBPACKBUS
+	select CDS3_IODRVDAL
+	select CDS3_INCLUDES
+	select CDS3_TSCIODRVKBUS
+	select CDS3_TSCEXTTASK
+	select CDS3_TSCLED
+	help
+		Builds and installs the Kbus device Driver.
+
+
+config CDS3_TSCIODRVKBUS
+	bool "KBUS communication helper"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	select CDS3_IODRVDAL
+	help
+		Builds and installs communication helper for KBUS Driver.
+
+
+config CDS3_IODRVDPS
+	bool "Io Driver Profibus Slave"
+	default n
+	select CDS3_IODRVDAL
+	select CDS3_INCLUDES
+	help
+		Builds and installs the Profibus Slave Driver.
+
+
+config CDS3_IODRVCANM
+	bool "Io Driver CANopen Manager"
+	default n
+	select CANOPEN
+	select CDS3_IODRVDAL
+	select CDS3_INCLUDES
+	help
+		Builds and installs the CAN Manager Driver.
+
+
+config CDS3_IODRVCANS
+	bool "Io Driver CANopen Slave"
+	default n
+	select CANOPEN
+	select CDS3_IODRVDAL
+	select CDS3_INCLUDES
+	help
+		Builds and installs the CAN Slave Driver.
+
+
+config CDS3_IODRVCANL2
+	bool "Io Driver CAN Layer2 Device"
+	default n
+	select CANOPEN
+	select CDS3_IODRVDAL
+	select CDS3_INCLUDES
+	help
+		Builds and installs the CAN Layer2 Driver.
+
+config CDS3_IODRVSERIAL
+	bool "Io Driver Serial"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	help
+		Builds and installs the Serial Driver.
+
+endmenu
+
+
+config CDS3_TSCOMS
+	bool "TscOMS"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	select OMS
+	help
+		Builds and installs the OMS Component.
+
+config CDS3_RTS_CFG_ADD_TSCOMS
+	string
+	depends on CDS3_TSCOMS
+	default TscOms
+
+
+config CDS3_TSCMOFWUP
+	bool "TscMoFwUp"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	help
+		Builds and installs a component to support RLB module firmware update.
+
+
+config CDS3_CMPKBUSASYNCCOM
+	bool "Component for WagoSysKbusAsyncCom_Internal_PFC.library"
+	default n
+	select CDS3_INCLUDES
+	select CODESYS3
+	select CDS3_IODRVDAL
+	select CDS3_IODRVKBUS
+	select LIBPACKBUS
+	select CDS3_TSCEXTTASK
+	help
+		Builds and installs the CoDeSys 3 component for KBus asynchronous communication library.
+
+
+config CDS3_CMPCANCONFIG
+	bool "Component for WagoCanConfig.library"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	select CDS3_IODRVCANM
+	select CDS3_IODRVCANS
+	help
+		Builds and installs the CoDeSys 3 component for WagoCanConfig library.
+
+config CDS3_TSCDPSLIB
+	bool "TscDps library"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	select CDS3_IODRVDPS
+	select CDS3_IODRVDAL
+	help
+	Builds and installs the  CoDeSys Profibus slave library.
+
+config CDS3_TSCLED
+	bool "TscLED"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	select LED_SERVER_META
+	select WAGO_PFC_DIAGNOSTIC
+	help
+		Builds and installs the LED Component for Controller LEDs.
+
+config CDS3_TSCSYSLOG
+	bool "TscLogBackendSyslog"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	help
+		Builds and installs the LED Component for Controller LEDs.
+
+config CDS3_TSCCOMSWITCH
+	bool "TscComSwitch"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	help
+		Builds and installs the Serial mode switch Component for PFC-Controller.
+
+config CDS3_TSCTIME_TARGET_PFCXXX
+	bool
+	default n
+	help
+		Set the Target to PFCXXX
+
+config CDS3_TSCTIME_TARGET_VTPCTP
+	bool
+	default n
+	help
+		Set the Target to eDISPLAY
+
+config CDS3_TSCTIME_TARGET_CONTROLLER100
+	bool
+	default n
+	help
+		Set the Target to Controller100
+
+config CDS3_TSCTIME_TARGET_PAC
+	bool
+	default n
+	help
+		Set the Target to PAC
+
+config CDS3_TSCTIME
+	bool "TscTime"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	select CDS3_TSCTIME_TARGET_PFCXXX if (CDS3_RTS_PRODUCT_PFCXXX || CDS3_RTS_PRODUCT_PAC || CDS3_RTS_PRODUCT_CC100)
+	select CDS3_TSCTIME_TARGET_VTPCTP if CDS3_RTS_PRODUCT_VTPCTP
+	select CDS3_TSCSHAREDPOINTER
+	select CDS3_TSCASYNCMGR
+	help
+		Builds and installs WAGO time extentions.
+
+config CDS3_TSCCOMEXTRA
+	bool "TscComExtra"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	select CDS3_TSCCOMSWITCH
+	help
+		Builds and installs WAGO extension functions for serial port manipulation.
+
+config CDS3_TSCSYSEXT
+	bool "TscSysExt"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	help
+		Builds and installs extensional functionality for WAGO system layer.
+
+config CDS3_TSCASYNCMGR
+	bool "TscAsyncMgr"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	select CDS3_TSCEXTTASK
+	help
+		Builds and installs WAGO Async Manager.
+
+config CDS3_TSCRETAINUIO_TARGET_PFCXXX
+	bool
+	default n
+	help
+		Set the Target to PFCXXX
+
+config CDS3_TSCRETAINUIO_TARGET_VTPCTP
+	bool
+	default n
+	help
+		Set the Target to eDISPLAY
+
+config CDS3_TSCRETAINUIO_TARGET_CC100
+	bool
+	default n
+	help
+		Set the Target to CC100
+
+
+config CDS3_TSCRETAINUIO_TARGET_PAC
+	bool
+	default n
+	help
+		Set the Target to PAC
+
+config CDS3_TSCRETAINUIO
+	bool "TscRetainUIO"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	select CDS3_TSCRETAINUIO_TARGET_PFCXXX if (CDS3_RTS_PRODUCT_PFCXXX || CDS3_RTS_PRODUCT_PAC)
+	select CDS3_TSCRETAINUIO_TARGET_VTPCTP if CDS3_RTS_PRODUCT_VTPCTP
+	select CDS3_TSCRETAINUIO_TARGET_CC100 if CDS3_RTS_PRODUCT_CC100
+	select WRETAIN
+	help
+		Builds and installs WAGO time extentions.
+
+config CDS3_TSCIECPRIOCHECK
+	bool "TscIecPrioCheck"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	help
+		Builds and installs TscIecPrioCheck.
+
+config CDS3_TSCEXTTASK
+	bool "TscExtTask"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	help
+		Builds and installs TscExtTask.
+
+config CDS3_TSCWAGOSTATUSPROVIDER
+	bool "WAGO Status Provider"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	select CONFIG_TOOLS
+	help
+		Builds and installs the wago status Provider component
+
+config CDS3_TSCRUNLED
+	bool "Run LED"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	select CDS3_TSCLED
+	select CDS3_TSCWAGOSTATUSPROVIDER
+	select CONFIG_TOOLS
+	select CDS3_TSCSYSPROCESSORLOAD
+	help
+		Builds and installs the RUN-LED-Driver
+
+config CDS3_TSCCHCFGONLINE
+	bool "Change Config Online"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	help
+		Builds and installs the RUN-LED-Driver
+
+config CDS3_TSCSYSPROCESSORLOAD
+	bool "cds3-TscSysProcessorLoad"
+	default n
+	select LIBCGROUPCPULOAD
+	select CDS3_INCLUDES
+	select CODESYS3
+	help
+		Platform specific library to determine the current processor load.
+
+    
+config CDS3_TSCCURL
+	bool "TscCurl"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	select LIBCURL
+	help
+		Builds and installs WAGO extension functions for libcurl usage.
+
+config CDS3_TSCDRM
+	bool "TscDrm"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	select LIBWAGODRM
+	select OPENSSL
+	help
+		Builds and installs WAGO licensing component.
+
+config CDS3_TSCSNMP
+	bool "cds3-tscsnmp"
+	default n
+	select CDS3_INCLUDES
+	select CODESYS3
+	select CDS3_TSCSHAREDPOINTER
+	select LIBWAGOSNMP
+	select CDS3_TSCASYNCMGR
+	help
+		SNMP-abstaraction for CODESYS V3
+
+config CDS3_TSCSHAREDPOINTER
+	bool "cds3-tscsharedpointer"
+	default n
+	select CDS3_INCLUDES
+	select CODESYS3
+	help
+		SNMP-abstraction for CODESYS V3
+
+config CDS3_TSCWEBSOCKETSERVER
+  bool "cds3-tscwebsocketserver"
+  default n
+  select CODESYS3
+  help
+    WebSocket Server library for CODESYS V3 (currently elrest)
+
+if CDS3_TSCWEBSOCKETSERVER
+config WEBSOCKETFRONTEND
+  bool "websocket-frontend (eWS.js)"
+  default n
+  select CODESYS3
+  help
+    Java Script WebSocket library (currently elrest)
+endif
+ 
+config CDS3_TSCSYSSQLITE
+	bool 
+	default n
+	select CDS3_INCLUDES
+	select CODESYS3
+	select SQLITE
+	select HOST_CT_BUILD
+	select GOOGLETEST
+	prompt "cds3-TscSysSqlite"
+	help
+		SQLite for CODESYS V3
+
+config CDS3_TSCIODRVCTP
+        bool "cds3-tsciodrvctp"
+        default n
+        select CDS3_INCLUDES
+        select CODESYS3
+        help
+                IoDrv for CTP (currently elrest)
+
+config CDS3_TSCVIRTUALKEYBOARD
+        bool "cds3-tscvirtualkeyboard"
+        default n
+        select CDS3_INCLUDES
+        select CODESYS3
+        help
+                Virtualkeyboard Events for CTP (currently elrest)
+
+config CDS3_TSCWAGOSYSBEEPER
+        bool "cds3-tscwagosysbeeper"
+        default n
+        select CDS3_INCLUDES
+        select CODESYS3
+        help
+                Library for TP600/EdgeBox Beeper (currently elrest)
+
+config CDS3_TSCWAGOSYSSENSOR
+        bool "cds3-tscwagosyssensor"
+        default n
+        select CDS3_INCLUDES
+        select CODESYS3
+        help
+                Library for TP600/EdgeBox Sensor (currently elrest)
+
+config CDS3_TSCWAGOSYSAUDIO
+        bool "cds3-tscwagosysaudio"
+        default n
+        select CDS3_INCLUDES
+        select CODESYS3
+        help
+                Library for TP600/EdgeBox Audio (currently elrest)
+
+config CDS3_TSCSYNCBOOTPROJECT
+    bool "TscSyncBootproject" 
+    default n 
+    select CODESYS3 
+    select CDS3_INCLUDES 
+    help  
+        This component synchronizes the bootproject to the storage after it has been uploaded to the controller
+        
+config TSCPARAMSERV
+    bool "TscParamServ"
+    default n
+    select HOST_CT_BUILD
+    select GOOGLETEST
+    select CDS3_INCLUDES
+    select CODESYS3
+    select CDS3_INCLUDES
+    select WAGO_LOGGING
+    select WAGO_PARAMETER_SERVICE
+    select WAGO_PARAMETER_SERVICE_CORE
+    select WAGO_PARAMETER_SERVICE_COM
+    select WAGO_PARAMETER_SERVICE_COM_LIB
+    help
+        This component implements access to parameter service in CODESYSv3 / e!RUNTIME
+
+config CDS3_TSCDRMIECINTERFACE
+	bool "TscDrmIecInterface"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	select LIBWAGODRM
+  select HOST_CT_BUILD
+  select GOOGLETEST
+    help
+		Builds and installs an IEC61131-Interface for CODESYSv3 to the WAGO licensing component
+
+config CDS3_TSCPAMIECINTERFACE
+	bool "TscPamIecInterface"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	select PAM
+	help
+		Builds and installs lib-interface for PAM library
+
+config CDS3_TSCWAGOSYSUSERGROUPIECINTERFACE
+	bool "TscWagoSysUserGroupIecInterface"
+	default n
+	select CODESYS3
+	select CDS3_INCLUDES
+	help
+		Builds and installs lib-interface for checking user group library
+		
+config CDS3_TSCIODRVCC100
+    bool "cds3-tsciodrvcc100"
+    default n
+    select CDS3_INCLUDES
+    select CODESYS3
+    help
+        IoDrv for CC100 (currently elrest)
+
+config CDS3_SYSUTIL
+    bool "cds3-sysutil"
+    default n
+    select CDS3_INCLUDES
+    select CODESYS3
+    help
+        SysUtil for websockets (currently elrest)
+
+config CDS3_CMPWSSERVER
+    bool "cds3-cmpwsserver"
+    default n
+    select CDS3_INCLUDES
+    select CODESYS3
+    select CDS3_TSCDRMIECINTERFACE
+    select CDS3_SYSUTIL
+    select HOST_PYTHON3_JSMIN
+    help
+        CmpWSServer for websockets (currently elrest)

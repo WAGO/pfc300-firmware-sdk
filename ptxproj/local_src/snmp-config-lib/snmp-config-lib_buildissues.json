@@ -1,0 +1,51 @@
+{
+  "_class": "io.jenkins.plugins.analysis.core.restapi.ReportApi",
+  "issues": [
+    {
+      "fileName": "local_src/snmp-config-lib/src/ControlSnmp.cpp",
+      "lineStart": "22",
+      "columnStart": "12",
+      "category": "Warning:clang-diagnostic-shorten-64-to-32",
+      "severity": "NORMAL",
+      "message": "implicit conversion loses integer precision: 'long' to 'int' [clang-diagnostic-shorten-64-to-32]",
+      "moduleName": "snmp-config-lib-tests"
+    },
+    {
+      "fileName": "local_src/snmp-config-lib/test-src/ControlSnmpTargetTest.cpp",
+      "lineStart": "39",
+      "columnStart": "13",
+      "category": "Warning:clang-diagnostic-shorten-64-to-32",
+      "severity": "NORMAL",
+      "message": "implicit conversion loses integer precision: 'long' to 'int' [clang-diagnostic-shorten-64-to-32]",
+      "moduleName": "snmp-config-lib-tests"
+    },
+    {
+      "fileName": "local_src/snmp-config-lib/test-src/SnmpUserConfTest.cpp",
+      "lineStart": "51",
+      "columnStart": "1",
+      "category": "Warning:clang-diagnostic-deprecated-declarations",
+      "severity": "NORMAL",
+      "message": "'InstantiateTestCase_P_IsDeprecated' is deprecated: INSTANTIATE_TEST_CASE_P is deprecated, please use INSTANTIATE_TEST_SUITE_P [clang-diagnostic-deprecated-declarations]",
+      "moduleName": "snmp-config-lib-tests"
+    },
+    {
+      "fileName": "pfc/ptxproj/local_src/snmp-config-lib/src/ControlSnmp.cpp",
+      "lineStart": "22",
+      "columnStart": "25",
+      "category": "Warning:conversion",
+      "severity": "NORMAL",
+      "message": "conversion from ‘long int’ to ‘int’ may change value [-Wconversion]",
+      "moduleName": "snmp-config-lib-tests"
+    },
+    {
+      "fileName": "pfc/ptxproj/local_src/snmp-config-lib/test-src/ControlSnmpTargetTest.cpp",
+      "lineStart": "39",
+      "columnStart": "26",
+      "category": "Warning:conversion",
+      "severity": "NORMAL",
+      "message": "conversion from ‘long int’ to ‘int’ may change value [-Wconversion]",
+      "moduleName": "snmp-config-lib-tests"
+    }
+  ],
+  "size": 5
+}

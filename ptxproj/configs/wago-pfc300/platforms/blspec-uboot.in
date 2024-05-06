@@ -1,0 +1,5 @@
+## SECTION=blspec
+
+config BLSPEC_UBOOT
+	tristate
+	prompt "u-boot bootloader spec entry"
