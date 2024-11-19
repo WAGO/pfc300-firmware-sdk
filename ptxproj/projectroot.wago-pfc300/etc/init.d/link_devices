@@ -24,6 +24,8 @@
 DEVS_TO_LINK="/etc/specific/.devs_to_link"
 DEV_SEARCH_PATH="/sys/devices/"
 
+CDS3_SPECIFIC_SERIAL_DEV_NAME="/dev/ttyRUNTIME0"
+
 check_unnamed()
 {
     local extract_result=$1
@@ -112,6 +114,7 @@ case $1 in
 
         if [[ -c "/dev/${SERIAL_DEV_NAME}" ]]; then
             ln -sf "/dev/${SERIAL_DEV_NAME}" "${SERIAL_DEV_LINK_NAME}"
+            ln -sf "${SERIAL_DEV_LINK_NAME}" "${CDS3_SPECIFIC_SERIAL_DEV_NAME}"
         fi
 
         echo "hardware-available=false" >"/etc/specific/features/serial-service-interface"

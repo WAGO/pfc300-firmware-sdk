@@ -95,6 +95,8 @@ $(STATEDIR)/libswitchconfig.targetinstall:
 	@$(call install_fixup, libswitchconfig,DESCRIPTION,missing)
 
 	@$(call install_lib, libswitchconfig, 0, 0, 0644, libswitchconfig)
+	@$(call install_alternative, libswitchconfig, 0, 0, 0755, /etc/init.d/featuredetect_switch)
+	@$(call install_link, libswitchconfig, ../init.d/featuredetect_switch, /etc/rc.d/S99_featuredetect_switch)
 
 	@$(call install_finish, libswitchconfig)
 
