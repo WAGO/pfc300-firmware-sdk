@@ -30,7 +30,7 @@ TEST_P(validation_suite, version_is_invalid) {
   ASSERT_FALSE(is_valid_fw_version(version));
 }
 
-INSTANTIATE_TEST_CASE_P(version, validation_suite, Values(
+INSTANTIATE_TEST_SUITE_P(version, validation_suite, Values(
   "", "4.03.10", "02.4.10", "04.04.1", "04.04.10", "04.04.10(x)", "04.04.10(100)", "0a.04.10", "04.04", "Test", "04.04.100"),
   [](const testing::TestParamInfo<validation_suite::ParamType>& param_info) {
     std::string name = param_info.param;

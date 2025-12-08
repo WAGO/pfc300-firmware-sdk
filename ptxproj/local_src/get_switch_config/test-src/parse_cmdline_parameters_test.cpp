@@ -68,6 +68,16 @@ TEST_F(parse_cmdline, request_backup_string) {
   EXPECT_THAT(options, SizeIs(0));
 }
 
+TEST_F(parse_cmdline, request_supported_values_string) {
+  ::std::vector< ::std::string> args = {"--supported-values"};
+  auto s                             = parse_commandline_args(args, parameters, options);
+
+  ASSERT_THAT(s.ok(), Eq(true));
+  EXPECT_THAT(parameters, SizeIs(1));
+  EXPECT_THAT(parameters, Contains(action::supported_values));
+  EXPECT_THAT(options, SizeIs(0));
+}
+
 TEST_F(parse_cmdline, request_backup_targetversion_string) {
   ::std::vector< ::std::string> args = {"--backup", "--backup-targetversion=04.04.00(26)"};
   auto s                             = parse_commandline_args(args, parameters, options);

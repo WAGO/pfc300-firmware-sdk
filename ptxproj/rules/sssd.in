@@ -21,6 +21,7 @@ config SSSD
 	select SAMBA
 	select CYRUS_SASL
 	select BUSYBOX_START_STOP_DAEMON	if SSSD_STARTSCRIPT
+	select LIBCURL
 	prompt "sssd"
 	help
 	  System Security Services Daemon

@@ -1,0 +1,54 @@
+From: unknown author <unknown.author@example.com>
+Date: Mon, 12 Sep 2022 08:39:41 +0200
+Subject: [PATCH] librpc/wscript_build: to remove dependency cmocka, remove
+ tests
+
+---
+ librpc/wscript_build | 37 -------------------------------------
+ 1 file changed, 37 deletions(-)
+
+diff --git a/librpc/wscript_build b/librpc/wscript_build
+index 3cbb5ff78e62..e84e5513b67c 100644
+--- a/librpc/wscript_build
++++ b/librpc/wscript_build
+@@ -708,40 +708,3 @@ bld.SAMBA_SUBSYSTEM('NDR_FSRVP_STATE',
+     source='gen_ndr/ndr_fsrvp_state.c',
+     public_deps='ndr'
+     )
+-#
+-# Cmocka tests
+-#
+-
+-bld.SAMBA_BINARY('test_ndr_macros',
+-                 source='tests/test_ndr_macros.c',
+-                 deps='''
+-                      cmocka
+-                      ndr
+-                      ''',
+-                 for_selftest=True)
+-
+-bld.SAMBA_BINARY('test_ndr_string',
+-                 source='tests/test_ndr_string.c',
+-                 deps='''
+-                      cmocka
+-                      talloc
+-                      ndr
+-                      ''',
+-                 for_selftest=True)
+-
+-bld.SAMBA_BINARY('test_ndr',
+-                 source='tests/test_ndr.c',
+-                 deps='''
+-                      cmocka
+-                      ndr
+-                      ''',
+-                 for_selftest=True)
+-
+-bld.SAMBA_BINARY('test_ndr_dns_nbt',
+-                 source='tests/test_ndr_dns_nbt.c',
+-                 deps='''
+-                      cmocka
+-                      ndr
+-                      ndr_nbt
+-                      ''',
+-                 for_selftest=True)

@@ -1,0 +1,81 @@
+From: unknown author <unknown.author@example.com>
+Date: Mon, 12 Sep 2022 08:39:41 +0200
+Subject: [PATCH] source3/wscript_build: to remove dependency cmocka, remove
+ tests
+
+---
+ source3/wscript_build | 40 ----------------------------------------
+ 1 file changed, 40 deletions(-)
+
+diff --git a/source3/wscript_build b/source3/wscript_build
+index 1188c782122e..d120bbfa5a78 100644
+--- a/source3/wscript_build
++++ b/source3/wscript_build
+@@ -105,17 +105,6 @@ bld.SAMBA3_SUBSYSTEM('TLDAP',
+                          samba3util
+                          ''')
+ 
+-bld.SAMBA3_BINARY('test_tldap',
+-                  source='lib/test_tldap.c',
+-                  deps='''
+-                       asn1util
+-                       LIBTSOCKET
+-                       samba3util
+-                       smbconf
+-                       cmocka
+-                       ''',
+-                  for_selftest=True)
+-
+ # libpdb.so should not expose internal symbols that are only usable
+ # to the statically linked modules that are merged into libpdb.
+ # Note that we always filter these symbols out in libpdb, even
+@@ -206,12 +195,6 @@ bld.SAMBA3_SUBSYSTEM('REGFIO',
+                     source='registry/regfio.c',
+                     deps='samba-util REG_PARSE_PRS')
+ 
+-bld.SAMBA_BINARY('test_registry_regfio',
+-                 source='registry/tests/test_regfio.c',
+-                 deps='cmocka samba3-util smbconf REGFIO',
+-                 local_include=False,
+-                 for_selftest=True)
+-
+ # Do not link against this use 'smbconf'
+ bld.SAMBA3_SUBSYSTEM('SMBREGISTRY',
+                    source='''
+@@ -1102,11 +1085,6 @@ bld.SAMBA3_SUBSYSTEM('ADOUBLE',
+                     source='lib/adouble.c',
+                     deps='STRING_REPLACE')
+ 
+-bld.SAMBA3_BINARY('test_adouble',
+-                 source='lib/test_adouble.c',
+-                 deps='smbd_base STRING_REPLACE cmocka',
+-                 for_selftest=True)
+-
+ bld.SAMBA3_SUBSYSTEM('STRING_REPLACE',
+                     source='lib/string_replace.c')
+ 
+@@ -1184,24 +1162,6 @@ bld.SAMBA3_BINARY('smbconftort',
+                       ''',
+                  for_selftest=True)
+ 
+-bld.SAMBA3_BINARY('test_mdsparser_es',
+-                 source='''
+-                 rpc_server/mdssvc/test_mdsparser_es.c
+-                 rpc_server/mdssvc/es_parser.y
+-                 rpc_server/mdssvc/es_lexer.l
+-                 rpc_server/mdssvc/es_mapping.c
+-                 ''',
+-                 deps='''
+-                 samba3-util
+-                 talloc
+-                 smbconf
+-                 jansson
+-                 cmocka
+-                 CMDLINE_S3
+-                 ''',
+-                 enabled=bld.env.spotlight_backend_es,
+-                 for_selftest=True)
+-
+ bld.SAMBA3_BINARY('versiontest',
+                  source='lib/version_test.c',
+                  deps='''

@@ -113,7 +113,6 @@ $(STATEDIR)/cyrus-sasl.targetinstall:
 #	#
 	@$(call install_copy, cyrus-sasl, 0, 0, 0755, -, /usr/sbin/pluginviewer)
 	@$(call install_copy, cyrus-sasl, 0, 0, 0755, -, /usr/sbin/saslauthd)
-	@$(call install_copy, cyrus-sasl, 0, 0, 0755, -, /usr/sbin/testsaslauthd)
 
 	@$(call install_finish, cyrus-sasl)
 

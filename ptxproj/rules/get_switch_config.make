@@ -16,20 +16,20 @@ PACKAGES-$(PTXCONF_GET_SWITCH_CONFIG) += get_switch_config
 #
 # Paths and names
 #
-GET_SWITCH_CONFIG_VERSION        := 1.0.0
+GET_SWITCH_CONFIG_VERSION        := 1.1.0
 GET_SWITCH_CONFIG_MD5            :=
 GET_SWITCH_CONFIG                := get_switch_config
 GET_SWITCH_CONFIG_BUILDCONFIG    := Release
 GET_SWITCH_CONFIG_SRC_DIR        := $(PTXDIST_WORKSPACE)/local_src/$(GET_SWITCH_CONFIG)
 GET_SWITCH_CONFIG_BUILDROOT_DIR  := $(BUILDDIR)/$(GET_SWITCH_CONFIG)
 GET_SWITCH_CONFIG_DIR            := $(GET_SWITCH_CONFIG_BUILDROOT_DIR)/src
-GET_SWITCH_CONFIG_BUILD_DIR      := $(GET_SWITCH_CONFIG_BUILDROOT_DIR)/bin/$(GET_SWITCH_CONFIG_BUILDCONFIG)
+GET_SWITCH_CONFIG_BIN_DIR        := $(GET_SWITCH_CONFIG_BUILDROOT_DIR)/bin/$(GET_SWITCH_CONFIG_BUILDCONFIG)
 GET_SWITCH_CONFIG_LICENSE        := MPL-2.0
 GET_SWITCH_CONFIG_CONF_TOOL      := NO
 GET_SWITCH_CONFIG_MAKE_ENV       := $(CROSS_ENV) \
 BUILDCONFIG=$(GET_SWITCH_CONFIG_BUILDCONFIG) \
-BIN_DIR=$(GET_SWITCH_CONFIG_BUILD_DIR) \
-SCRIPT_DIR=$(PTXDIST_SYSROOT_HOST)/lib/ct-build \
+BIN_DIR=$(GET_SWITCH_CONFIG_BIN_DIR) \
+SCRIPT_DIR=$(PTXDIST_SYSROOT_HOST)/usr/lib/ct-build \
 
 
 # ----------------------------------------------------------------------------
@@ -94,7 +94,7 @@ $(STATEDIR)/get_switch_config.targetinstall:
 	@$(call install_fixup, get_switch_config,AUTHOR,"WAGO GmbH \& Co. KG")
 	@$(call install_fixup, get_switch_config,DESCRIPTION,missing)
 
-	@$(call install_copy, get_switch_config, 0, 0, 0755, $(GET_SWITCH_CONFIG_BUILD_DIR)/get_switch_config.elf, /etc/config-tools/get_switch_config)
+	@$(call install_copy, get_switch_config, 0, 0, 0755, $(GET_SWITCH_CONFIG_BIN_DIR)/get_switch_config.elf, /etc/config-tools/get_switch_config)
 
 	@$(call install_finish, get_switch_config)
 

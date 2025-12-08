@@ -1,3 +1,203 @@
+Firmware Release 04.08.09 (30) – CODESYS 3
+
+Engineering by CODESYS IDE V. 3.5 is supported
+Engineering by e!COCKPIT IDE is not supported
+CODESYS 2.3 is not supported
+
+Migration Guide – from e!COCKPIT to CODEYS V3.5:
+• https://techdocs.wago.com/Software/eCOCKPIT_Migration/en-US/index.html#index_content
+
+System
+[NEW] DHCP-Vendor-Class-ID can be set in the electronic plate
+[NEW] WAT-37496 Disabling operating switch and reset taster via WBM
+[FIXED] WAT-36654
+        WAT-37458 Broadcast/Multicast storm protection for 4-port devices
+                  missing
+[FIXED] WAT-38350 PFC300: Randomly disconnection by link down
+[FIXED] WAT-37271 PFC300: Cannot be operated with the DALI configurator
+[FIXED] WAT-37583 PFC300: Randomly flickering outputs in some special
+                          applications
+[FIXED] WAT-36811 Ethernet Settings displays wrong error code
+[FIXED] WAT-37624 FW update stops at 71%
+[FIXED]
+[FIXED] WAT-37397 Outsourced home directory to sd could not be used by SFTP user
+                  Solution: set up WBM configuration 
+                            “Home directory on sd card enabled”
+[DEPRECATED] The network feature rate limiting is deprecated and will be removed
+             in future versions
+[Note] ADVICE Code generation from WDA OpenAPI is possible via Postman
+[DEPRECATED] Webserver module PHP-PAM will be removed in future versions
+
+Operating System
+[FIXED] SECURITY CVE-2024-10525, CVE-2022-4127, CVE-2022-3567, CVE-2022-3566,
+                 CVE-2022-3523, CVE-2022-2785, CVE-2022-3170, CVE-2022-2977,
+                 CVE-2024-53085, CVE-2024-21891, CVE-2025-21796, CVE2025-21792,
+                 CVE-2025-21791, CVE-2025-21699, CVE-2025-21697, CVE-2025-21692,
+                 CVE-2025-21692, CVE-2025-21690, CVE-2025-21689, CVE-2024-57900,
+                 CVE-2024-57896, CVE-2024-53142, CVE2024-57896, CVE-2024-53142,
+                 CVE-2024-53141, CVE-2024-53088, CVE-2024-53079, CVE-2024-50063,
+                 CVE-2024-50062, CVE-2024-50061, CVE-2024-50059, CVE-2024-50058,
+                 CVE-2024-50057, CVE2024-41007, CVE-2024-41006, CVE-2024-41001,
+                 CVE-2023-52926, CVE-2023-52878, CVE-2023-52877, CVE-2023-52876,
+                 CVE-2023-52876, CVE-2023-52875, CVE-2023-52873, CVE-2023-52872,
+                 CVE2023-4208, CVE-2023-4207, CVE-2023-4206, CVE-2023-42753,
+                 CVE-2023-2163, CVE-2023-42755, CVE-2023-42754, CVE-2023-39194,
+                 CVE-2023-43945, CVE-2023-2156, CVE-2023-2860, CVE2023-3773,
+                 CVE-2023-2430, CVE-2023-3776, CVE-2023-3609, CVE2023-0160,
+                 CVE-2023-6932, CVE-2023-1206, CVE-2023-6931, CVE2023-6531,
+                 CVE-2023-51043, CVE-2024-25739, CVE-2023-52340, CVE-2024-47674,
+                 CVE-2023-3090, CVE-2023-0386, CVE-2023-34256, CVE-2023-0458,
+                 CVE-2023-2235, CVE-2023-2006, CVE2023-22997, CVE-2023-1077,
+                 CVE-2022-47929, CVE-2022-3114,CVE-2024-5742, CVE-2016-9840,
+                 CVE-2024-52633, CVE-2025-24855, CVE-2025-5554, CVE-2024-28085,
+                 CVE-2024-12797, CVE2025-26466, CVE-2024-5535, CVE-2024-2398,
+                 CVE-2025-46394, CVE-2024-58251, CVE-2025-32463, CVE-2024-38428
+[NEW] Update to Linux Kernel 6.6.49-rt41
+[NEW] Update PTXdist to 2024.12.0
+[FIXED] WAT-37320 Update Mosquitto to 2.0.21
+[FIXED] WAT-37046 Update nano to 8.0
+[FIXED] WAT-37444 Update zlib to 1.3.1 and boost to 1.83.0
+[FIXED] WAT-37139 Update gnome to 2.82.2
+[FIXED] WAT-38258 Update libxslt to 1.1.43
+[FIXED] WAT-36500 Update util-linux to 2.40.2
+[FIXED] WAT-37339 Update OpenSSL to 3.2.4
+[FIXED] WAT-37386 Update OpenSSH to 9.9p1
+[FIXED] WAT-36501 Update libcurl to 8.10.1
+[FIXED] WAT-37509 Update BusyBox to 1.37.0
+[FIXED] WAT-37757 Update sudo to 1.19.17p1
+[FIXED] WAT-37047 Update GNU Wget to 1.25.0
+[NEW] Update sqlite to 3.50.4
+
+Runtime System
+[FIXED] SECURITY CVE-2025-2595, CVE-2025-41659, CVE-2025-41658, CVE-2025-41691,
+                 CVE-2024-8175, CVE-2025-1468, CVE-2024-5000
+[NEW] Runtime update to CODESYS 3.5.21.2 Hotfix 1
+[FIXED] WAT-37129 PFC300: WDA query to “0-0-codesys3-applications” does not work.
+[FIXED] WAT-37912 Update OpenSSL to 3.2.4
+[FIXED] WAT-37358 PFC300: Sporadic exceptions when using retain memory
+[FIXED] WAT-37236
+        WAT-37222 PFC300: Exception in WebVisu writing retain memory
+[FIXED] WAT-35317
+        WAT-37285 Separate user for OPC UA access
+[FIXED] WAT-37964 CODESYS application checksum is not displayed
+[NEW] CODESYS PAM connection can be setup in “etc/codesys3.d/RtsCore.cfg”
+[NOTE] ADVICE PFC300: The behavior of the DAL watchdog may change on multicore
+                      systems. 
+                      If a high-priority IEC task on a core displaces all other
+                      IEC tasks on this core, the BUS is no longer driven into a
+                      defined state via the watchdog, as the system and
+                      therefore other IEC tasks on other cores can still be
+                      executed.
+                      For controlled behavior, it is recommended to use the
+                      CODESYS internal task watchdog.
+
+Fieldbus Interface & Protocols
+[FIXED] WAT-38064
+        WAT-36953 OPC UA Server: Denial of service after several link down
+        WAT-36466
+[FIXED] WAT-36983 OPC UA Server: Restore settings with a backup don’t work.
+[FIXED] WAT-34974 OPC UA Client: Datasource client doesn’t set string variables
+                                 correctly
+[FIXED] WAT-35200 OPC UA Server: Changing the AccessRights of the
+                                 CommunicationManager doesn't show any changes
+[FIXED] WAT-35222 OPC UA Server: Exception after reset cold with new symbol
+                                 configuration
+[FIXED] WAT-37262 OPC UA Server: Exception runtime received SIGABRT
+[FIXED] WAT-35039 OPC UA PubSub: Communication no longer starts after reset
+                                 cold.
+[FIXED] WAT-37946 OPC UA PubSub: Exception when generating security key
+[NEW] WAT-37330 CANopen: Expansion to 16 parallel channels
+[FIXED] WAT-38374 BACnet: Creating BACnet file objects using relative path.
+[FIXED] WAT-37233 BACnet: Trendlog log buffer didn’t save to SD card
+
+Libraries
+[FIXED] WAT-37330 WagoAppCanOpen: Delays when querying multiple CAN devices
+[FIXED] WAT-38002 WagoAppJSON: Support for the Czech character set
+[FIXED] WAT-35079 FbCanRX29BitFrameAll: Stops working after a longer period.
+[FIXED] WAT-36884 / 37408 WagoAppConfigTool: Usage could lead to timeouts or
+                                             downtime
+[FIXED] WAT-37271 Libpackbus: Dali configurator didn’t work properly
+
+Web Based Management
+[FIXED] SECURITY CVE-2024-41968, CVE-2025-25264
+[FIXED] WAT-36823 Privileged escalation docker settings
+[FIXED] WAT-38080 SNMPv3 could not be set up in the firewall
+[FIXED] WAT-37113 User “user” can change runtime settings.
+[FIXED] WAT-37110 CORS configuration for WDA REST API - You can set which
+                  "Cross Origin" accesses the webserver transmits to the
+                  presenting browser as permitted.
+[KNOWN] WAT-36520 Mass Storage - Format memory card: If one or more USB sticks
+                  are connected to the device, the memory card is not always
+                  formatted, but the last connected medium.
+                  Workaround: Remove USB stick(s).
+
+################################################################################
+
+Firmware Release 04.07.51 (29) – CODESYS 3
+
+Engineering by CODESYS IDE V. 3.5 is supported
+Engineering by e!COCKPIT IDE is not supported
+CODESYS 2.3 is not supported
+
+Migration Guide – from e!COCKPIT to CODEYS V3.5:
+• https://techdocs.wago.com/Software/eCOCKPIT_Migration/en-US/index.html#index_content
+
+System
+[CHANGED] Password suggestions disabled
+[KNOWN] WAT37135 Passwords in WBM can only be changed one times
+
+################################################################################
+
+Firmware Release 04.07.50 (29) – CODESYS 3
+
+Engineering by CODESYS IDE V. 3.5 is supported
+Engineering by e!COCKPIT IDE is not supported
+CODESYS 2.3 is not supported
+
+Migration Guide – from e!COCKPIT to CODEYS V3.5:
+• https://techdocs.wago.com/Software/eCOCKPIT_Migration/en-US/index.html#index_content
+
+System
+[CHANGED] Firewall is setup by default as active.
+[NEW] Forcing password rules. 8 characters containing special character,
+      upper/lower case, 1 digit
+[NEW] Password history, 3 passwords
+[CHANGED] User User is deactivated for console access
+[CHANGED] User Root is deactivated for ssh console and WBM
+[CHANGED] User User cannot change the password in the WBM settings
+[NEW] Groups WagoUpload and FWupdate
+[CHANGED] User User has limited access rights for the WBM
+[CHANGED] Open IP-ports by default: https 443, ssh 22
+[CHANGED] Open VPN IP-ports by default: https 443, ssh 22
+[CHANGED] No WAN IP ports by default
+[CHANGED] Service interface is unassigned by default
+[CHANGED] Commissioning service is deactivated by default
+[KNOWN] WAT37135 Passwords in WBM can only be changed one times
+
+################################################################################
+
+Firmware Release 04.07.03 (29) – CODESYS 3
+
+Engineering by CODESYS IDE V. 3.5 is supported
+Engineering by e!COCKPIT IDE is not supported
+CODESYS 2.3 is not supported
+
+Migration Guide – from e!COCKPIT to CODEYS V3.5:
+• https://techdocs.wago.com/Software/eCOCKPIT_Migration/en-US/index.html#index_content
+
+Runtime System
+[NEW] Update to CODESYS version 3.5.21.1
+
+Fieldbus Interface & Protocols
+[FIXED] WAT-37539 OPC UA Server: Exception after several anonymous login/logout
+[FIXED] WAT-36983 OPC UA Server: After restoring, the saved value is not set
+[FIXED] WAT-37080 OPC UA Server: Long reconnection time
+[FIXED] WAT-36867 OPC UA Server: Unhandled exception
+[FIXED] WAT-36484 OPC UA Client: Error Failed (7001) in state Busy
+[FIXED] WAT-37233 BACnet: Permanent saving BACnet Trendlog Logbuffer to SD card
+
+################################################################################
+
 Firmware Release 04.06.01 (28) – CODESYS 3
 
 Engineering by CODESYS IDE V. 3.5 is supported

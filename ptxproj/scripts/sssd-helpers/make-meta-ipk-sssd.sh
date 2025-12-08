@@ -25,9 +25,7 @@ copy_deps ()
   local ipk_path;
 
   for package in ${@}; do
-    ipk_path="$(find_ipk "${pkgs_dir}" "${package}")"
-
-    if [ -z "${ipk_path}" ]; then
+    if ! ipk_path="$(find_ipk "${pkgs_dir}" "${package}")"; then
       1>&2 echo 'Error: Could not find package "'"${package}"'"!'
       exit 1
     fi
@@ -36,27 +34,25 @@ copy_deps ()
   done
 }
 
-find_license ()
+find_licence ()
 {
   find "${1}" -iname 'license.'"${2}"'_*.txt' | grep '.*'
 }
 
-copy_licenses ()
+copy_licences ()
 {
-  local lic_dir; lic_dir="${1}"; shift
+  local licence_dir; licence_dir="${1}"; shift
   local dst_dir; dst_dir="${1}"; shift
-  local package;
-  local lic_path;
+  local package
+  local licence
 
   for package in ${@}; do
-    lic_path="$(find_license "${lic_dir}" "${package}")"
-
-    if [ -z "${lic_path}" ]; then
-      1>&2 echo 'Error: Could not find license for package "'"${package}"'"!'
+    if ! licence="$(find_licence "${licence_dir}" "${package}")"; then
+      1>&2 echo 'Error: Could not find licence for package "'"${package}"'"!'
       exit 1
     fi
 
-    cp "${lic_path}" "${dst_dir}"
+    cp "${licence}" "${dst_dir}"
   done
 }
 
@@ -70,8 +66,8 @@ make_ipk_skeleton ()
   local basedir; basedir="${1}"
 
   # common ipk folder structure
-  mkdir "${basedir}/data"
-  mkdir "${basedir}/control"
+  mkdir -p "${basedir}/data"
+  mkdir -p "${basedir}/control"
 
   echo '2.0' >"${basedir}/debian-binary"
 }
@@ -91,29 +87,30 @@ build_ipk ()
 }
 
 # Arguments:
-SSSD_REPO_VERSION=$1
-FW_VERSION=$2
-SSSD_BUILD_DIR=$3
+SSSD_REPO_VERSION="$1"
+FW_VERSION="$2"
+SSSD_BUILD_DIR="$3"
+ARCH_STRING="$4"
 
 # PTXdist defines:
 PTXPROJ="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Local defines:
 PTXDIST_PACKAGES_DIR="${PTXDIST_PLATFORMDIR}/packages/"
-PTXDIST_LICENSES_DIR="${PTXDIST_WORKSPACE}/projectroot/usr/share/licenses/oss/"
+PTXDIST_LICENCES_DIR="${PTXDIST_WORKSPACE}/projectroot/usr/share/licenses/oss/"
 
 SSSD_REPO_NAME='sssd_repo'
 SSSD_REPO_FILE_NAME="${SSSD_REPO_NAME}_${SSSD_REPO_VERSION}_FW${FW_VERSION}.repo"
 
 # dependencies which are needed and already in right order!
-PACKAGES='attr acl ding-libs libbsd talloc tevent tdb ldb keyutils krb5 p11-kit samba cyrus-sasl libunistring pcre2 c-ares sssd'
+PACKAGES='acl ding-libs libbsd talloc tevent tdb ldb keyutils krb5 p11-kit libtasn1 nettle gnutls samba cyrus-sasl libunistring pcre2 c-ares sssd'
 
 # this is our working dir structure
 SSSD_META_IPK_BUILD_DIR="${SSSD_BUILD_DIR}/sssd-meta-ipk"
 SSSD_META_IPK_CONTROL_DIR="${SSSD_META_IPK_BUILD_DIR}/control"
 SSSD_META_IPK_DATA_DIR="${SSSD_META_IPK_BUILD_DIR}/data"
 SSSD_META_IPK_PACKAGES_DIR="${SSSD_META_IPK_DATA_DIR}/root/packages-sssd"
-SSSD_META_IPK_LICENSES_DIR="${SSSD_META_IPK_DATA_DIR}/usr/share/licenses/oss"
+SSSD_META_IPK_LICENCES_DIR="${SSSD_META_IPK_DATA_DIR}/usr/share/licenses/oss"
 
 # make build dir
 mkdir -p "${SSSD_META_IPK_BUILD_DIR}"
@@ -124,12 +121,12 @@ make_ipk_skeleton "${SSSD_META_IPK_BUILD_DIR}"
 # where we want while installing, this is packet
 # specific
 mkdir -m 700 -p "${SSSD_META_IPK_DATA_DIR}/root"
-mkdir "${SSSD_META_IPK_PACKAGES_DIR}"
-mkdir -p "${SSSD_META_IPK_LICENSES_DIR}"
+mkdir -p "${SSSD_META_IPK_PACKAGES_DIR}"
+mkdir -p "${SSSD_META_IPK_LICENCES_DIR}"
 
-# collect ipks and licenses
+# collect ipks and licences
 copy_deps "${PTXDIST_PACKAGES_DIR}" "${SSSD_META_IPK_PACKAGES_DIR}" ${PACKAGES}
-copy_licenses "${PTXDIST_LICENSES_DIR}" "${SSSD_META_IPK_LICENSES_DIR}" ${PACKAGES}
+copy_licences "${PTXDIST_LICENCES_DIR}" "${SSSD_META_IPK_LICENCES_DIR}" ${PACKAGES}
 
 cat <<-"EOF_IPKG_MAKE_INDEX_SH" >"${SSSD_META_IPK_PACKAGES_DIR}/ipkg-make-index.sh"
 	#!/usr/bin/env bash
@@ -188,7 +185,7 @@ cat <<-EOF_CONTROL_FILE >"${SSSD_META_IPK_CONTROL_DIR}/control"
 	Priority: optional
 	Version:  ${SSSD_REPO_VERSION}
 	Section:    base
-	Architecture: armhf
+	Architecture: ${ARCH_STRING}
 	Maintainer: "WAGO GmbH & Co. KG"
 	Depends:
 	Source:

@@ -14,8 +14,8 @@ PACKAGES-$(PTXCONF_TDB) += tdb
 #
 # Paths and names
 #
-TDB_VERSION		:= 1.4.3
-TDB_MD5			:= e638e8890f743624a754304b3f994f4d
+TDB_VERSION		:= 1.4.9
+TDB_MD5			:= 4a5fa135ed7cb989eabe415450001beb
 TDB			:= tdb-$(TDB_VERSION)
 TDB_SUFFIX		:= tar.gz
 TDB_URL			:= https://www.samba.org/ftp/tdb/$(TDB).$(TDB_SUFFIX)
@@ -50,6 +50,9 @@ TDB_CONF_OPT	:=  \
 	--cross-execute=/does/not/exist/and/triggers/exceptions \
 	--cross-answers=$(TDB_DIR)/cross-answers
 
+TDB_CONF_ENV := \
+	$(CROSS_ENV) \
+	PYTHONHASHSEED=1
 
 $(STATEDIR)/tdb.prepare:
 	@$(call targetinfo)
@@ -74,7 +77,19 @@ $(STATEDIR)/tdb.targetinstall:
 	@$(call install_fixup, tdb,AUTHOR,"WAGO GmbH \& Co. KG")
 	@$(call install_fixup, tdb,DESCRIPTION,missing)
 
+#       #
+#       # install /usr/lib/*
+#       #
 	@$(call install_lib, tdb, 0, 0, 0644, libtdb)
+
+#       #
+#       # install /usr/bin/*
+#       #
+ifdef PTXCONF_TDB_INSTALL_TOOLS
+	@$(call install_copy, ldb, 0, 0, 0644, -, /usr/bin/tdbbackup)
+	@$(call install_copy, ldb, 0, 0, 0644, -, /usr/bin/tdbdump)
+	@$(call install_copy, ldb, 0, 0, 0644, -, /usr/bin/tdbrestore)
+endif
 
 	@$(call install_finish, tdb)
 

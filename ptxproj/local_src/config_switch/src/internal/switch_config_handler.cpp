@@ -23,6 +23,7 @@ namespace {
 constexpr auto version              = "version";
 constexpr auto broadcast_protection = "broadcast-protection";
 constexpr auto multicast_protection = "multicast-protection";
+constexpr auto multicast_protection_enabled = "multicast-protection-enabled";
 constexpr auto port_mirror          = "port-mirror";
 
 constexpr auto sp_ports = "ports";
@@ -36,7 +37,7 @@ constexpr auto pm_destination = "destination";
 constexpr auto p_name    = "name";
 constexpr auto p_enabled = "enabled";
 
-constexpr auto all_parameters = {"set"};
+constexpr auto all_parameters = {"set", "restore"};
 
 template <typename T>
 using setter_func_map = ::std::map<::std::string, ::std::function<void(T&, const nlohmann::basic_json<>&)>>;
@@ -53,7 +54,7 @@ void read_parameters_to(nlohmann::json const& parameters, setter_func_map<T> con
 }
 
 void check_version_is_supported(const switch_config& config) {
-  if (config.version > 1) {
+  if (config.version > 2) {
     throw switch_config_exception(switch_config_error::invalid_parameter,
                                   "invalid version: " + ::std::to_string(static_cast<unsigned int>(config.version)));
   }
@@ -144,6 +145,7 @@ void edit_parameters(const ::std::string& json_string, switch_config& config) {
       {version,         [](switch_config& c, const nlohmann::basic_json<>& value) { c.version = get_checked<uint8_t>(value, version); check_version_is_supported(c); }},
       {broadcast_protection,     [](switch_config& c, const nlohmann::basic_json<>& value) {edit_storm_protection_parameters(c.broadcast_protection, value); }},
       {multicast_protection,     [](switch_config& c, const nlohmann::basic_json<>& value) {edit_storm_protection_parameters(c.multicast_protection, value); }},
+      {multicast_protection_enabled, [](switch_config& c, const nlohmann::basic_json<>& value) { value.get_to(c.multicast_protection_enabled); }},
       {port_mirror,              edit_port_mirror_parameters}
   };
   // clang-format on

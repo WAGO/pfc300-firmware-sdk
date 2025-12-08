@@ -1,6 +1,7 @@
 // Copyright (c) 2023 WAGO GmbH & Co. KG
 // SPDX-License-Identifier: MPL-2.0
 
+// #include "test_helper.hpp"
 #include "switch_config_handler.hpp"
 
 #include <gmock/gmock-matchers.h>
@@ -13,52 +14,6 @@
 #include <vector>
 
 #include "switch_config_api.hpp"
-
-namespace wago::libswitchconfig {
-
-::std::string bool_to_string(bool value);
-::std::string bool_to_string(bool value) {
-  return (value) ? "true" : "false";
-}
-
-void PrintTo(const port& p, std::ostream* os);
-void PrintTo(const port& p, std::ostream* os) {
-  *os << "(" << p.name << ": " << bool_to_string(p.enabled) << ")";
-}
-
-void PrintTo(const ::std::vector<port>& ports, std::ostream* os);
-void PrintTo(const ::std::vector<port>& ports, std::ostream* os) {
-  *os << "(";
-    for(const auto& p : ports) {
-      PrintTo(p, os);
-    }
-  *os << ")";
-}
-
-void PrintTo(const storm_protection& sp, std::ostream* os);
-void PrintTo(const storm_protection& sp, std::ostream* os) {
-  *os << "(";
-  PrintTo(sp.ports, os);
-  *os << ", " << sp.value << ", " << sp.unit << ")";
-}
-
-void PrintTo(const port_mirror& pm, std::ostream* os);
-void PrintTo(const port_mirror& pm, std::ostream* os) {
-  *os << "(" << bool_to_string(pm.enabled) << ", " << pm.source << ", " << pm.destination << ")";
-}
-
-void PrintTo(const switch_config& sc, std::ostream* os);
-void PrintTo(const switch_config& sc, std::ostream* os) {
-  *os << "(bc: ";
-  PrintTo(sc.broadcast_protection, os);
-  *os << ", mc: ";
-  PrintTo(sc.multicast_protection, os);
-  *os << ", pm: ";
-  PrintTo(sc.port_mirroring, os);
-  *os << ", version: " << ::std::to_string(static_cast<unsigned int>(sc.version)) << ")";
-}
-
-}  // namespace wago::libswitchconfig
 
 namespace wago::config_switch {
 
@@ -110,7 +65,7 @@ TEST(edit_parameters, broadcast_protection_change_value) {
 
   switch_config config = default_sc;
   edit_parameters(json_string, config);
-  
+
   storm_protection bp = {{{true, "X1"}, {false, "X2"}}, "pps", 2500};
   EXPECT_THAT(config.broadcast_protection, bp);
 }
@@ -153,6 +108,24 @@ TEST(edit_parameters, port_mirror_enabled) {
   EXPECT_THAT(config.version, 1);
 }
 
+TEST(edit_parameters, set_config_from_micrel_v2_format) {
+  auto json_string =
+      R"({"version":2,"broadcast-protection":{"ports":[{"name":"X1","enabled":true},{"name":"X2","enabled":true}],"unit":"percent","value":5},"multicast-protection-enabled":true,"port-mirror":{"destination":"X1","enabled":true,"source":"X2"}})";
+
+  switch_config config = default_sc;
+  edit_parameters(json_string, config);
+
+  storm_protection bp = {{{true, "X1"}, {true, "X2"}}, "percent", 5};
+  // storm_protection mp = {{{true, "X1"}, {false, "X2"}}, "pps", 2000};
+  bool mp_enabled = true;
+  port_mirror pm      = {true, "X2", "X1"};
+
+  EXPECT_THAT(config.broadcast_protection, bp);
+  EXPECT_THAT(config.multicast_protection_enabled, mp_enabled);
+  EXPECT_THAT(config.port_mirroring, pm);
+  EXPECT_THAT(config.version, 2);
+}
+
 TEST(edit_parameters, parameter_is_known) {
   parameter_map params;
   params["set"] = R"({"version": 1})";
@@ -168,7 +141,7 @@ TEST(edit_parameters, throw_on_unknown_parameter) {
 }
 
 TEST(edit_parameters, throw_for_newer_config_versions) {
-  auto input = R"({"version": 2})";
+  auto input = R"({"version": 3})";
 
   switch_config config{};
   EXPECT_THROW(edit_parameters(input, config), switch_config_exception);

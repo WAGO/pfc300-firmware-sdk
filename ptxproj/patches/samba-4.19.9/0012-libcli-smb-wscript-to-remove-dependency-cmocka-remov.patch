@@ -1,0 +1,29 @@
+From: unknown author <unknown.author@example.com>
+Date: Mon, 12 Sep 2022 08:39:41 +0200
+Subject: [PATCH] libcli/smb/wscript: to remove dependency cmocka, remove tests
+
+---
+ libcli/smb/wscript | 10 ----------
+ 1 file changed, 10 deletions(-)
+
+diff --git a/libcli/smb/wscript b/libcli/smb/wscript
+index 3c49dc4f0ddf..08e67b264025 100644
+--- a/libcli/smb/wscript
++++ b/libcli/smb/wscript
+@@ -69,16 +69,6 @@ def build(bld):
+     ''',
+     )
+ 
+-    bld.SAMBA_BINARY('test_smb1cli_session',
+-                     source='test_smb1cli_session.c',
+-                     deps='cmocka cli_smb_common',
+-                     for_selftest=True)
+-
+-    bld.SAMBA_BINARY('test_util_translate',
+-                     source='test_util_translate.c',
+-                     deps='cmocka cli_smb_common',
+-                     for_selftest=True)
+-
+     bld.SAMBA_PYTHON('py_reparse_symlink',
+                      source='py_reparse_symlink.c',
+                      deps='cli_smb_common',

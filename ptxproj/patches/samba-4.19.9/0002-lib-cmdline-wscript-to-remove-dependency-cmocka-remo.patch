@@ -1,0 +1,23 @@
+From: unknown author <unknown.author@example.com>
+Date: Mon, 12 Sep 2022 08:39:41 +0200
+Subject: [PATCH] lib/cmdline/wscript: to remove dependency cmocka, remove
+ tests
+
+---
+ lib/cmdline/wscript | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/lib/cmdline/wscript b/lib/cmdline/wscript
+index 01ead85e2c48..0aca99b41ce5 100644
+--- a/lib/cmdline/wscript
++++ b/lib/cmdline/wscript
+@@ -27,9 +27,3 @@ def build(bld):
+     bld.SAMBA_SUBSYSTEM('CMDLINE_S4',
+                         source='cmdline_s4.c',
+                         deps='cmdline')
+-
+-    bld.SAMBA_BINARY('test_cmdline',
+-                     source='tests/test_cmdline.c',
+-                     deps='cmocka CMDLINE_S3 LOADPARM_CTX',
+-                     local_include=False,
+-                     for_selftest=True)

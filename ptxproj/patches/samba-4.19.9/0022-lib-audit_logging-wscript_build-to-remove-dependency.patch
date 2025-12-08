@@ -1,0 +1,65 @@
+From: unknown author <unknown.author@example.com>
+Date: Mon, 12 Sep 2022 08:39:41 +0200
+Subject: [PATCH] lib/audit_logging/wscript_build: to remove dependency cmocka,
+ remove tests
+
+---
+ lib/audit_logging/wscript_build | 48 -----------------------------------------
+ 1 file changed, 48 deletions(-)
+
+diff --git a/lib/audit_logging/wscript_build b/lib/audit_logging/wscript_build
+index 3d530975ac6f..b682a971dc08 100644
+--- a/lib/audit_logging/wscript_build
++++ b/lib/audit_logging/wscript_build
+@@ -9,51 +9,3 @@ bld.SAMBA_SUBSYSTEM(
+             authn_policy''',
+     source='audit_logging.c'
+ )
+-
+-if bld.AD_DC_BUILD_IS_ENABLED():
+-    bld.SAMBA_BINARY(
+-        'audit_logging_test',
+-        source='tests/audit_logging_test.c',
+-        deps='''
+-             audit_logging
+-             jansson
+-             cmocka
+-             talloc
+-             samba-util
+-             LIBTSOCKET
+-             authn_policy
+-        ''',
+-        for_selftest=True
+-    )
+-
+-if bld.AD_DC_BUILD_IS_ENABLED():
+-    bld.SAMBA_BINARY(
+-        'audit_logging_error_test',
+-        source='tests/audit_logging_error_test.c',
+-        deps='''
+-             audit_logging
+-             jansson
+-             cmocka
+-             talloc
+-             samba-util
+-             LIBTSOCKET
+-             authn_policy
+-        ''',
+-        for_selftest=True,
+-        ldflags='''
+-            -Wl,--wrap,json_object_set_new
+-            -Wl,--wrap,json_object_update
+-            -Wl,--wrap,json_array_append_new
+-            -Wl,--wrap,json_array_extend
+-            -Wl,--wrap,json_object
+-            -Wl,--wrap,json_string
+-            -Wl,--wrap,json_integer
+-            -Wl,--wrap,json_array
+-            -Wl,--wrap,json_dumps
+-            -Wl,--wrap,gettimeofday
+-            -Wl,--wrap,localtime
+-            -Wl,--wrap,talloc_named_const
+-            -Wl,--wrap,talloc_strdup
+-            -Wl,--wrap,tsocket_address_string
+-        '''
+-    )

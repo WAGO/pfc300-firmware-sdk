@@ -1,0 +1,25 @@
+From: unknown author <unknown.author@example.com>
+Date: Mon, 12 Sep 2022 08:39:41 +0200
+Subject: [PATCH] source4/utils/oLschema2ldif/wscript_build: to remove
+ dependency cmocka, remove tests
+
+---
+ source4/utils/oLschema2ldif/wscript_build | 8 --------
+ 1 file changed, 8 deletions(-)
+
+diff --git a/source4/utils/oLschema2ldif/wscript_build b/source4/utils/oLschema2ldif/wscript_build
+index bb39bae90d86..052e3ebee850 100644
+--- a/source4/utils/oLschema2ldif/wscript_build
++++ b/source4/utils/oLschema2ldif/wscript_build
+@@ -10,11 +10,3 @@ bld.SAMBA_BINARY('oLschema2ldif',
+ 	manpages='oLschema2ldif.1',
+ 	deps='oLschema2ldif-lib cmdline',
+ 	)
+-
+-bld.SAMBA_BINARY('test_oLschema2ldif',
+-	source='test.c',
+-	deps='cmocka oLschema2ldif-lib',
+-	local_include=False,
+-	enabled=bld.CONFIG_SET('HAVE_FMEMOPEN'),
+-	install=False,
+-	)

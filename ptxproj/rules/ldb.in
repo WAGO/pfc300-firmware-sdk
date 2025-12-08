@@ -12,3 +12,12 @@ config LDB
 	select HOST_SYSTEM_PYTHON3
 	help
 	  LDB is the database engine used within Samba.
+
+if LDB
+config LDB_INSTALL_TOOLS
+        bool
+	default n
+        prompt "install tools"
+        help
+          Installs tool collection of LDB
+endif

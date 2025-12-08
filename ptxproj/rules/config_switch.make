@@ -16,20 +16,20 @@ PACKAGES-$(PTXCONF_CONFIG_SWITCH) += config_switch
 #
 # Paths and names
 #
-CONFIG_SWITCH_VERSION        := 1.0.0
+CONFIG_SWITCH_VERSION        := 1.1.0
 CONFIG_SWITCH_MD5            :=
 CONFIG_SWITCH                := config_switch
 CONFIG_SWITCH_BUILDCONFIG    := Release
 CONFIG_SWITCH_SRC_DIR        := $(PTXDIST_WORKSPACE)/local_src/$(CONFIG_SWITCH)
 CONFIG_SWITCH_BUILDROOT_DIR  := $(BUILDDIR)/$(CONFIG_SWITCH)
 CONFIG_SWITCH_DIR            := $(CONFIG_SWITCH_BUILDROOT_DIR)/src
-CONFIG_SWITCH_BUILD_DIR      := $(CONFIG_SWITCH_BUILDROOT_DIR)/bin/$(CONFIG_SWITCH_BUILDCONFIG)
+CONFIG_SWITCH_BIN_DIR        := $(CONFIG_SWITCH_BUILDROOT_DIR)/bin/$(CONFIG_SWITCH_BUILDCONFIG)
 CONFIG_SWITCH_LICENSE        := MPL-2.0
 CONFIG_SWITCH_CONF_TOOL      := NO
 CONFIG_SWITCH_MAKE_ENV       := $(CROSS_ENV) \
 BUILDCONFIG=$(CONFIG_SWITCH_BUILDCONFIG) \
-BIN_DIR=$(CONFIG_SWITCH_BUILD_DIR) \
-SCRIPT_DIR=$(PTXDIST_SYSROOT_HOST)/lib/ct-build \
+BIN_DIR=$(CONFIG_SWITCH_BIN_DIR) \
+SCRIPT_DIR=$(PTXDIST_SYSROOT_HOST)/usr/lib/ct-build \
 
 
 # ----------------------------------------------------------------------------
@@ -43,7 +43,7 @@ SCRIPT_DIR=$(PTXDIST_SYSROOT_HOST)/lib/ct-build \
 $(CONFIG_SWITCH_SRC_DIR):
 	@echo "Error: $@: directory not found!" >&2; exit 2
 
-$(STATEDIR)/config_switch.extract:  | $(CONFIG_SWITCH_SRC_DIR) 
+$(STATEDIR)/config_switch.extract:  | $(CONFIG_SWITCH_SRC_DIR)
 	@$(call targetinfo)
 	@mkdir -p $(CONFIG_SWITCH_BUILDROOT_DIR)
 	@if [ ! -L $(CONFIG_SWITCH_DIR) ]; then \
@@ -94,8 +94,7 @@ $(STATEDIR)/config_switch.targetinstall:
 	@$(call install_fixup, config_switch,AUTHOR,"WAGO GmbH \& Co. KG")
 	@$(call install_fixup, config_switch,DESCRIPTION,missing)
 
-	@$(call install_copy, config_switch, 0, 0, 0755, $(CONFIG_SWITCH_BUILD_DIR)/config_switch.elf, /etc/config-tools/config_switch)
-	@$(call install_alternative, config_switch, 0, 0, 0750, /etc/config-tools/events/networking/update_switch_config);
+	@$(call install_copy, config_switch, 0, 0, 0755, $(CONFIG_SWITCH_BIN_DIR)/config_switch.elf, /etc/config-tools/config_switch)
 
 	@$(call install_finish, config_switch)
 

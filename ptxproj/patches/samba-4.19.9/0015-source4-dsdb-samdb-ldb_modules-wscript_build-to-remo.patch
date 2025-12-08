@@ -1,0 +1,57 @@
+From: unknown author <unknown.author@example.com>
+Date: Mon, 12 Sep 2022 08:39:41 +0200
+Subject: [PATCH] source4/dsdb/samdb/ldb_modules/wscript_build: to remove
+ dependency cmocka, remove tests
+
+---
+ source4/dsdb/samdb/ldb_modules/wscript_build | 38 ----------------------------
+ 1 file changed, 38 deletions(-)
+
+diff --git a/source4/dsdb/samdb/ldb_modules/wscript_build b/source4/dsdb/samdb/ldb_modules/wscript_build
+index c3e8b54f0bae..0df5fe03fff6 100644
+--- a/source4/dsdb/samdb/ldb_modules/wscript_build
++++ b/source4/dsdb/samdb/ldb_modules/wscript_build
+@@ -18,43 +18,5 @@ bld.SAMBA_SUBSYSTEM('DSDB_MODULE_HELPER_RIDALLOC',
+ 	deps='MESSAGING',
+ 	)
+ 
+-# Build the cmocka unit tests
+-bld.SAMBA_BINARY('test_unique_object_sids',
+-        source='tests/test_unique_object_sids.c',
+-        deps='''
+-            talloc
+-            samdb
+-            cmocka
+-            DSDB_MODULE_HELPERS
+-        ''',
+-        for_selftest=True)
+-bld.SAMBA_BINARY('test_encrypted_secrets_tdb',
+-        source='tests/test_encrypted_secrets.c',
+-        cflags='-DTEST_BE=\"tdb\"',
+-        deps='''
+-            talloc
+-            samba-util
+-            samdb-common
+-            samdb
+-            cmocka
+-            gnutls
+-            DSDB_MODULE_HELPERS
+-        ''',
+-        for_selftest=True)
+-if conf.env.HAVE_LMDB:
+-    bld.SAMBA_BINARY('test_encrypted_secrets_mdb',
+-            source='tests/test_encrypted_secrets.c',
+-            cflags='-DTEST_BE=\"mdb\"',
+-            deps='''
+-                talloc
+-                samba-util
+-                samdb-common
+-                samdb
+-                cmocka
+-                gnutls
+-                DSDB_MODULE_HELPERS
+-            ''',
+-            for_selftest=True)
+-
+ if bld.AD_DC_BUILD_IS_ENABLED():
+     bld.PROCESS_SEPARATE_RULE("server")

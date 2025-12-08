@@ -1,0 +1,33 @@
+From: unknown author <unknown.author@example.com>
+Date: Mon, 13 Nov 2023 10:48:49 +0100
+Subject: [PATCH] Drop check for "nsupdate"
+
+---
+ src/external/nsupdate.m4 | 18 ++----------------
+ 1 file changed, 2 insertions(+), 16 deletions(-)
+
+diff --git a/src/external/nsupdate.m4 b/src/external/nsupdate.m4
+index a137f38221b2..574b1d11bf6a 100644
+--- a/src/external/nsupdate.m4
++++ b/src/external/nsupdate.m4
+@@ -1,18 +1,4 @@
+ AC_PATH_PROG(NSUPDATE, nsupdate)
+ AC_MSG_CHECKING(for executable nsupdate)
+-if test -x "$NSUPDATE"; then
+-  AC_DEFINE_UNQUOTED([NSUPDATE_PATH], ["$NSUPDATE"], [The path to nsupdate])
+-  AC_MSG_RESULT(yes)
+-
+-  AC_MSG_CHECKING(for nsupdate 'realm' support')
+-  if AC_RUN_LOG([echo realm |$NSUPDATE >&2]); then
+-    AC_MSG_RESULT([yes])
+-  else
+-    AC_MSG_RESULT([no])
+-    AC_MSG_ERROR([nsupdate does not support 'realm'])
+-  fi
+-
+-else
+-  AC_MSG_RESULT([no])
+-  AC_MSG_ERROR([nsupdate is not available])
+-fi
++AC_DEFINE_UNQUOTED([NSUPDATE_PATH], ["$NSUPDATE"], [The path to nsupdate])
++AC_MSG_RESULT(yes)

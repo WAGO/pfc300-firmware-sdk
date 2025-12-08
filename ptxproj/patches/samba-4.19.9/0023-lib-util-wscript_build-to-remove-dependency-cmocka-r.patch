@@ -1,0 +1,100 @@
+From: unknown author <unknown.author@example.com>
+Date: Mon, 12 Sep 2022 08:39:41 +0200
+Subject: [PATCH] lib/util/wscript_build: to remove dependency cmocka, remove
+ tests
+
+---
+ lib/util/wscript_build | 83 --------------------------------------------------
+ 1 file changed, 83 deletions(-)
+
+diff --git a/lib/util/wscript_build b/lib/util/wscript_build
+index b4fcfeaba07c..9a5bde343da1 100644
+--- a/lib/util/wscript_build
++++ b/lib/util/wscript_build
+@@ -330,86 +330,3 @@ else:
+                         source='util_str_hex.c',
+                         deps='talloc',
+                         local_include=False)
+-
+-    bld.SAMBA_BINARY('test_rfc1738',
+-                     source='tests/rfc1738.c',
+-                     deps='cmocka replace samba-util',
+-                     local_include=False,
+-                     for_selftest=True)
+-
+-    bld.SAMBA_BINARY('test_ms_fnmatch',
+-                     source='tests/test_ms_fnmatch.c',
+-                     deps='cmocka replace samba-util',
+-                     local_include=False,
+-                     for_selftest=True)
+-
+-    bld.SAMBA_BINARY('test_talloc_keep_secret',
+-                     source='tests/test_talloc_keep_secret.c',
+-                     deps='cmocka replace samba-util',
+-                     local_include=False,
+-                     for_selftest=True)
+-
+-    bld.SAMBA_BINARY('test_byteorder',
+-                     source='tests/test_byteorder.c',
+-                     deps='cmocka replace samba-util',
+-                     local_include=False,
+-                     for_selftest=True)
+-
+-    bld.SAMBA_BINARY('test_bytearray',
+-                     source='tests/test_bytearray.c',
+-                     deps='cmocka replace samba-util',
+-                     local_include=False,
+-                     for_selftest=True)
+-
+-    bld.SAMBA_BINARY('test_byteorder_verify',
+-                     source='tests/test_byteorder_verify.c',
+-                     deps='cmocka replace samba-util',
+-                     local_include=False,
+-                     for_selftest=True)
+-
+-    bld.SAMBA_BINARY('test_util_paths',
+-                     source='tests/test_util_paths.c',
+-                     deps='cmocka replace talloc samba-util',
+-                     local_include=False,
+-                     for_selftest=True)
+-
+-    bld.SAMBA_BINARY('test_util',
+-                     source='tests/test_util.c',
+-                     deps='cmocka replace talloc samba-util',
+-                     local_include=False,
+-                     for_selftest=True)
+-
+-    bld.SAMBA_BINARY('test_memcache',
+-                     source='tests/test_memcache.c',
+-                     deps='cmocka replace talloc samba-util',
+-                     local_include=False,
+-                     for_selftest=True)
+-
+-    bld.SAMBA_BINARY('test_sys_rw',
+-                     source='tests/test_sys_rw.c',
+-                     deps='cmocka replace samba-util',
+-                     local_include=False,
+-                     for_selftest=True)
+-
+-    bld.SAMBA_BINARY('test_s4_logging',
+-                     source='tests/test_logging.c',
+-                     deps=' '.join(['CMDLINE_S4',
+-                                    'samba-util',
+-                                    'popt']),
+-                     local_include=False,
+-                     for_selftest=True)
+-
+-    bld.SAMBA_BINARY('test_s3_logging',
+-                     source='tests/test_logging.c',
+-                     deps=' '.join(['CMDLINE_S3',
+-                                    'samba-util',
+-                                    'popt']),
+-                     cflags="-D USING_CMDLINE_S3",
+-                     local_include=False,
+-                     for_selftest=True)
+-
+-    bld.SAMBA_BINARY('test_stable_sort',
+-                     source='tests/test_stable_sort.c',
+-                     deps='cmocka replace talloc stable_sort',
+-                     local_include=False,
+-                     for_selftest=True)

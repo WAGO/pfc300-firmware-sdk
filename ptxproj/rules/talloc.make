@@ -14,8 +14,8 @@ PACKAGES-$(PTXCONF_TALLOC) += talloc
 #
 # Paths and names
 #
-TALLOC_VERSION		:= 2.3.1
-TALLOC_MD5		:= ce40593428c0de6b85946189dcc37b5e
+TALLOC_VERSION		:= 2.4.1
+TALLOC_MD5		:= b0f40831552f8dca770048f7040fefe1
 TALLOC			:= talloc-$(TALLOC_VERSION)
 TALLOC_SUFFIX		:= tar.gz
 TALLOC_URL		:= https://www.samba.org/ftp/talloc/$(TALLOC).$(TALLOC_SUFFIX)
@@ -50,6 +50,9 @@ TALLOC_CONF_OPT	:=  \
 	--cross-execute=/does/not/exist/and/triggers/exceptions \
 	--cross-answers=$(TALLOC_DIR)/cross-answers
 
+TALLOC_CONF_ENV := \
+	$(CROSS_ENV) \
+	PYTHONHASHSEED=1
 
 $(STATEDIR)/talloc.prepare:
 	@$(call targetinfo)

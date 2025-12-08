@@ -1,1 +1,0 @@
-../../../../patches/autogen.sh

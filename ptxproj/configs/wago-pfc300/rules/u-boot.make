@@ -31,6 +31,7 @@ U_BOOT_BUILD_DIR	:= $(U_BOOT_DIR)-build
 U_BOOT_SOURCE		:= $(SRCDIR)/u-boot-$(U_BOOT_VERSION).tar.gz
 U_BOOT_MD5_FILE	:= $(U_BOOT_SOURCE).md5
 U_BOOT_SRC_URL		:= $(call jfrog_template_to_url, U_BOOT_SRC)
+U_BOOT_URL		:= $(U_BOOT_SRC_URL)
 else
 U_BOOT_VERSION		:= $(call remove_quotes,$(PTXCONF_U_BOOT_VERSION))
 U_BOOT_MD5		:= $(call remove_quotes,$(PTXCONF_U_BOOT_MD5))

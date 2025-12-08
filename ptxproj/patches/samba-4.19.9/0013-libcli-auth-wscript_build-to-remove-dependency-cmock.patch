@@ -1,0 +1,66 @@
+From: unknown author <unknown.author@example.com>
+Date: Mon, 12 Sep 2022 08:39:41 +0200
+Subject: [PATCH] libcli/auth/wscript_build: to remove dependency cmocka,
+ remove tests
+
+---
+ libcli/auth/wscript_build | 49 -----------------------------------------------
+ 1 file changed, 49 deletions(-)
+
+diff --git a/libcli/auth/wscript_build b/libcli/auth/wscript_build
+index c73e0d15e3cd..9c9165db0978 100644
+--- a/libcli/auth/wscript_build
++++ b/libcli/auth/wscript_build
+@@ -49,52 +49,3 @@ bld.SAMBA_SUBSYSTEM('PAM_ERRORS',
+ bld.SAMBA_SUBSYSTEM('SPNEGO_PARSE',
+                     source='spnego_parse.c',
+                     deps='asn1util')
+-
+-bld.SAMBA_BINARY(
+-        'test_ntlm_check',
+-        source='tests/ntlm_check.c',
+-        deps='''
+-             NTLM_CHECK
+-             CREDENTIALS_NTLM
+-             samba-credentials
+-             cmocka
+-             talloc
+-        ''',
+-        for_selftest=True
+-    )
+-
+-bld.SAMBA_BINARY('test_rc4_passwd_buffer',
+-                 source='tests/test_rc4_passwd_buffer.c',
+-                 deps='''
+-                      INIT_SAMR
+-                      LIBCLI_AUTH
+-                      cmocka
+-                      ''',
+-                 for_selftest=True)
+-
+-bld.SAMBA_BINARY('test_schannel',
+-                 source='tests/test_schannel.c',
+-                 deps='''
+-                      gensec
+-                      cmocka
+-                      ''',
+-                 for_selftest=True)
+-
+-bld.SAMBA_BINARY('test_gnutls',
+-                 source='tests/test_gnutls.c',
+-                 deps='''
+-                      gnutls
+-                      LIBCLI_AUTH
+-                      cmocka
+-                      samba-util
+-                      ''',
+-                 for_selftest=True)
+-
+-bld.SAMBA_BINARY('test_encode_decode',
+-                 source='tests/test_encode_decode.c',
+-                 deps='''
+-                      LIBCLI_AUTH
+-                      cmocka
+-                      samba-util
+-                      ''',
+-                 for_selftest=True)

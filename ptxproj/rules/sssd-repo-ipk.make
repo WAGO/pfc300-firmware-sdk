@@ -17,6 +17,7 @@ SSSD_REPO_IPK_DIR	:= $(BUILDDIR)/$(SSSD_REPO_IPK)
 
 SSSD_REPO_IPK_REVISIONS_FILE	=	$(call ptx/get-alternative, projectroot, etc/REVISIONS)
 SSSD_REPO_IPK_FW_REVISION	:=	$(shell grep 'FIRMWARE=' "$(SSSD_REPO_IPK_REVISIONS_FILE)" | cut -d= -f2 | sed -e 's/(/_/g;s/)//g')
+SSSD_REPO_IPK_DEVPKG := NO
 
 # ----------------------------------------------------------------------------
 # Get
@@ -52,7 +53,7 @@ $(STATEDIR)/sssd-repo-ipk.compile: $(STATEDIR)/sssd.targetinstall
 	@$(call targetinfo)
 	@mkdir -p $(SSSD_REPO_IPK_DIR)
 #	# create repo IPK for SSSD and dependencies
-	@$(PTXDIST_WORKSPACE)/scripts/sssd-helpers/make-meta-ipk-sssd.sh $(SSSD_REPO_IPK_VERSION) $(SSSD_REPO_IPK_FW_REVISION) $(SSSD_REPO_IPK_DIR)
+	@$(PTXDIST_WORKSPACE)/scripts/sssd-helpers/make-meta-ipk-sssd.sh $(SSSD_REPO_IPK_VERSION) $(SSSD_REPO_IPK_FW_REVISION) $(SSSD_REPO_IPK_DIR) $(PTXCONF_ARCH_STRING)
 	@$(call touch)
 
 # ----------------------------------------------------------------------------

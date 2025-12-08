@@ -1,0 +1,29 @@
+From: unknown author <unknown.author@example.com>
+Date: Thu, 16 Nov 2023 06:45:50 +0100
+Subject: [PATCH] libcli/drsuapi/wscript_build: to remove dependency cmocka,
+ remove tests
+
+---
+ libcli/drsuapi/wscript_build | 12 ------------
+ 1 file changed, 12 deletions(-)
+
+diff --git a/libcli/drsuapi/wscript_build b/libcli/drsuapi/wscript_build
+index 1aee095130cd..55b0de65c48c 100644
+--- a/libcli/drsuapi/wscript_build
++++ b/libcli/drsuapi/wscript_build
+@@ -5,15 +5,3 @@ bld.SAMBA_SUBSYSTEM('LIBCLI_DRSUAPI',
+ 	source='repl_decrypt.c',
+ 	public_deps='LIBCLI_AUTH samdb z'
+ 	)
+-
+-bld.SAMBA_BINARY(
+-    'test_repl_decrypt',
+-    source='tests/test_repl_decrypt.c',
+-    deps='''
+-    LIBCLI_DRSUAPI
+-    cmocka
+-    talloc
+-    ''',
+-    for_selftest=True,
+-    enabled=bld.AD_DC_BUILD_IS_ENABLED()
+-)

@@ -8,3 +8,12 @@ config TDB
 	help
 	  TDB stands for "Trivial database" and was first introduced in
           Samba as a way to store information quickly and effectively.
+
+if TDB
+config TDB_INSTALL_TOOLS
+        bool
+       default n
+        prompt "install tools"
+        help
+          Installs tool collection of TDB
+endif

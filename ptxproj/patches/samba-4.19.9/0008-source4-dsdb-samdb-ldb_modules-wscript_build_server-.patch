@@ -1,0 +1,103 @@
+From: unknown author <unknown.author@example.com>
+Date: Mon, 12 Sep 2022 08:39:41 +0200
+Subject: [PATCH] source4/dsdb/samdb/ldb_modules/wscript_build_server: to
+ remove dependency cmocka, remove tests
+
+---
+ .../dsdb/samdb/ldb_modules/wscript_build_server    | 83 ----------------------
+ 1 file changed, 83 deletions(-)
+
+diff --git a/source4/dsdb/samdb/ldb_modules/wscript_build_server b/source4/dsdb/samdb/ldb_modules/wscript_build_server
+index 7a63f43726b0..815fc48dfbb8 100644
+--- a/source4/dsdb/samdb/ldb_modules/wscript_build_server
++++ b/source4/dsdb/samdb/ldb_modules/wscript_build_server
+@@ -5,89 +5,6 @@ bld.SAMBA_SUBSYSTEM('DSDB_MODULE_HELPERS_AUDIT',
+ 	            autoproto='audit_util_proto.h',
+ 	            deps='DSDB_MODULE_HELPERS audit_logging')
+ 
+-#
+-# These tests require JANSSON, so we only build them if we are doing a
+-# build on the AD DC (where Jansson is required).
+-#
+-
+-bld.SAMBA_BINARY('test_audit_util',
+-                 source='tests/test_audit_util.c',
+-                 deps='''
+-                 talloc
+-                 samba-util
+-                 samdb-common
+-                 samdb
+-                 cmocka
+-                 audit_logging
+-                 DSDB_MODULE_HELPERS
+-                 ''',
+-                 for_selftest=True)
+-
+-bld.SAMBA_BINARY('test_audit_log',
+-                 source='tests/test_audit_log.c',
+-                 deps='''
+-                 talloc
+-                 samba-util
+-                 samdb-common
+-                 samdb
+-                 cmocka
+-                 audit_logging
+-                 DSDB_MODULE_HELPERS
+-                 DSDB_MODULE_HELPERS_AUDIT
+-                 ''',
+-                 for_selftest=True)
+-
+-bld.SAMBA_BINARY('test_audit_log_errors',
+-                 source='tests/test_audit_log_errors.c',
+-                 deps='''
+-                 talloc
+-                 samba-util
+-                 samdb-common
+-                 samdb
+-                 cmocka
+-                 audit_logging
+-                 DSDB_MODULE_HELPERS
+-                 DSDB_MODULE_HELPERS_AUDIT
+-                 ''',
+-                 ldflags='''
+-                     -Wl,--wrap,json_new_object
+-                     -Wl,--wrap,json_add_version
+-                     -Wl,--wrap,json_add_timestamp
+-                 ''',
+-                 for_selftest=True)
+-
+-bld.SAMBA_BINARY('test_group_audit',
+-                 source='tests/test_group_audit.c',
+-                 deps='''
+-                 talloc
+-                 samba-util
+-                 samdb-common
+-                 samdb
+-                 cmocka
+-                 audit_logging
+-                 DSDB_MODULE_HELPERS
+-                 DSDB_MODULE_HELPERS_AUDIT
+-                 ''',
+-                 for_selftest=True)
+-
+-bld.SAMBA_BINARY('test_group_audit_errors',
+-                 source='tests/test_group_audit_errors.c',
+-                 deps='''
+-                 talloc
+-                 samba-util
+-                 samdb-common
+-                 samdb
+-                 cmocka
+-                 audit_logging
+-                 DSDB_MODULE_HELPERS
+-                 DSDB_MODULE_HELPERS_AUDIT
+-                 ''',
+-                 ldflags='''
+-                     -Wl,--wrap,json_new_object
+-                     -Wl,--wrap,json_add_version
+-                     -Wl,--wrap,json_add_timestamp
+-                 ''',
+-                 for_selftest=True)
+ 
+ bld.SAMBA_MODULE('ldb_samba_dsdb',
+ 	source='samba_dsdb.c',

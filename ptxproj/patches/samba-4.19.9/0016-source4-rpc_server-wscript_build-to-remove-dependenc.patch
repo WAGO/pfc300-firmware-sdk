@@ -1,0 +1,29 @@
+From: unknown author <unknown.author@example.com>
+Date: Mon, 12 Sep 2022 08:39:41 +0200
+Subject: [PATCH] source4/rpc_server/wscript_build: to remove dependency
+ cmocka, remove tests
+
+---
+ source4/rpc_server/wscript_build | 12 ------------
+ 1 file changed, 12 deletions(-)
+
+diff --git a/source4/rpc_server/wscript_build b/source4/rpc_server/wscript_build
+index 31ec4f60c9a6..b4cf3fe8b3bd 100644
+--- a/source4/rpc_server/wscript_build
++++ b/source4/rpc_server/wscript_build
+@@ -207,15 +207,3 @@ bld.SAMBA_MODULE('service_dcerpc',
+                  internal_module=False,
+                  deps='dcerpc_server'
+                  )
+-
+-bld.SAMBA_BINARY('test_rpc_dns_server_dnsutils',
+-                 source='tests/rpc_dns_server_dnsutils_test.c',
+-                 deps='''
+-                      dnsserver_common
+-                      dcerpc_server
+-                      cmocka
+-                      talloc
+-                      ''',
+-                 for_selftest=True,
+-                 enabled=bld.AD_DC_BUILD_IS_ENABLED()
+-                 )

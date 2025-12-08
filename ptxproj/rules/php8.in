@@ -21,6 +21,7 @@ menuconfig PHP8
 	select OPENSSL            if PHP8_EXT_OPENSSL
 	select LIBFFI             if PHP8_EXT_FFI
 	select LIBPNG             if PHP8_EXT_GD
+	select LIBJPEG            if PHP8_EXT_GD
 	select LIBGD              if PHP8_EXT_GD
 	select LIBGD_XPM          if PHP8_EXT_GD
 	select PHP8_EXT_OPCACHE   if PHP8_EXT_OPCACHE_JIT

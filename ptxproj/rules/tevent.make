@@ -14,8 +14,8 @@ PACKAGES-$(PTXCONF_TEVENT) += tevent
 #
 # Paths and names
 #
-TEVENT_VERSION		:= 0.10.2
-TEVENT_MD5		:= 105c7a4dbb96f1751eb27dfd05e7fa84
+TEVENT_VERSION		:= 0.15.0
+TEVENT_MD5		:= 80b3cee64c4a4d9eee58079624bd04b6
 TEVENT			:= tevent-$(TEVENT_VERSION)
 TEVENT_SUFFIX		:= tar.gz
 TEVENT_URL		:= https://www.samba.org/ftp/tevent/$(TEVENT).$(TEVENT_SUFFIX)
@@ -38,6 +38,7 @@ TEVENT_CONF_OPT	:=  \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib \
+	--with-privatelibdir=/usr/lib \
 	--bundled-libraries=NONE \
 	--disable-rpath \
 	--disable-rpath-install \
@@ -50,6 +51,9 @@ TEVENT_CONF_OPT	:=  \
 	--cross-execute=/does/not/exist/and/triggers/exceptions \
 	--cross-answers=$(TEVENT_DIR)/cross-answers
 
+TEVENT_CONF_ENV := \
+	$(CROSS_ENV) \
+	PYTHONHASHSEED=1
 
 $(STATEDIR)/tevent.prepare:
 	@$(call targetinfo)

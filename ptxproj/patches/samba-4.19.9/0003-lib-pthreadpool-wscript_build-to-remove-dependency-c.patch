@@ -1,0 +1,31 @@
+From: unknown author <unknown.author@example.com>
+Date: Mon, 12 Sep 2022 08:39:41 +0200
+Subject: [PATCH] lib/pthreadpool/wscript_build: to remove dependency cmocka,
+ remove tests
+
+---
+ lib/pthreadpool/wscript_build | 14 --------------
+ 1 file changed, 14 deletions(-)
+
+diff --git a/lib/pthreadpool/wscript_build b/lib/pthreadpool/wscript_build
+index e270f90333f0..1d7615d9f018 100644
+--- a/lib/pthreadpool/wscript_build
++++ b/lib/pthreadpool/wscript_build
+@@ -19,17 +19,3 @@ else:
+                                    pthreadpool_tevent.c
+                                 ''',
+                          deps='replace tevent-util')
+-
+-
+-bld.SAMBA_BINARY('pthreadpooltest',
+-                  source='tests.c',
+-                  deps='PTHREADPOOL',
+-                  enabled=bld.env.WITH_PTHREADPOOL,
+-                  for_selftest=True)
+-
+-bld.SAMBA_BINARY('pthreadpooltest_cmocka',
+-                  source='tests_cmocka.c',
+-                  deps='PTHREADPOOL cmocka',
+-                  ldflags='-Wl,--wrap=pthread_create',
+-                  enabled=bld.env.WITH_PTHREADPOOL and bld.env['HAVE_LDWRAP'],
+-                  for_selftest=True)

@@ -3,6 +3,7 @@
 
 #include "tc.hpp"
 
+#include <cassert>
 #include <nlohmann/json.hpp>
 #include <nlohmann/json_fwd.hpp>
 #include <optional>
@@ -17,29 +18,38 @@ namespace wago::libswitchconfig {
 
 namespace {
 
-::std::string build_tc_ingress_rate_cmd(const ::std::string& dst_mac, __attribute__ ((unused)) const ::std::string& unit,
-                                        const ::std::string& rate) {
+::std::string build_tc_ingress_rate_cmd(const ::std::string& dst_mac, const ::std::string& rate, rate_type rt) {
   // TODO (Team) For Bytes per second use "rate" instead of "pkts_rate".
   //       https://man7.org/linux/man-pages/man8/tc-police.8.html
-  return " ingress flower skip_sw dst_mac " + dst_mac + " action police pkts_rate " + rate + " pkts_burst 1 drop";
+
+  if (rt == rate_type::PKTS_RATE) {
+    // for micrel packages per second use:
+    return " ingress flower skip_sw dst_mac " + dst_mac + " action police pkts_rate " + rate + " pkts_burst 1 drop";
+  } else if (rt == rate_type::RATE) {
+    // for marvell the rate is specified in MBits
+    return " ingress flower skip_sw dst_mac " + dst_mac + " action police rate " + rate + "mbit burst 1 drop";
+  } else {
+    assert("TC-Tool: Invalid rate type");
+    return "";
+  }
 }
 
 ::std::string build_tc_add_filter_cmd(const ::std::string& port_name, const ::std::string& filter_cmd) {
-  return "tc filter add dev " + port_name + " " + filter_cmd;
+  return "/usr/sbin/tc filter add dev " + port_name + " " + filter_cmd;
 }
 
 ::std::string build_tc_del_filter_cmd(const ::std::string& port_name, const ::std::string& pref,
                                       const ::std::string& filter) {
-  return "tc filter del dev " + port_name + " pref " + pref + " " + filter;
+  return "/usr/sbin/tc filter del dev " + port_name + " pref " + pref + " " + filter;
 }
 
 ::std::string build_tc_del_filter_cmd(const ::std::string& port_name, const ::std::string& filter) {
-  return "tc filter del dev " + port_name + " " + filter;
+  return "/usr/sbin/tc filter del dev " + port_name + " " + filter;
 }
 
 ::std::string build_tc_change_filter_cmd(const ::std::string& port_name, const ::std::string& pref,
                                          const ::std::string& handle, const std::string& filter_cmd) {
-  return "tc filter replace dev " + port_name + " pref " + pref + " handle " + handle + " " + filter_cmd;
+  return "/usr/sbin/tc filter replace dev " + port_name + " pref " + pref + " handle " + handle + " " + filter_cmd;
 }
 
 status get_status_from_tc_program(const program& programm) {
@@ -47,7 +57,7 @@ status get_status_from_tc_program(const program& programm) {
 }
 
 status tc_show_filter(const ::std::string& port_name, const ::std::string& filter, nlohmann::json& ingress_filter) {
-  auto cmd = "tc -json filter show dev " + port_name + " " + filter;
+  auto cmd = "/usr/sbin/tc -json filter show dev " + port_name + " " + filter;
   auto p   = program::execute(cmd);
   if (p.get_result() == 0) {
     ingress_filter = nlohmann::json::parse(p.get_stdout());
@@ -159,7 +169,7 @@ status tc_show_filter(const ::std::string& port_name, const ::std::string& filte
 }
 
 status tc_show_qdisc(const ::std::string& port_name, nlohmann::json& qdiscs) {
-  auto cmd = "tc -json qdisc show dev " + port_name;
+  auto cmd = "/usr/sbin/tc -json qdisc show dev " + port_name;
   auto p   = program::execute(cmd);
   if (p.get_result() == 0) {
     qdiscs = nlohmann::json::parse(p.get_stdout());
@@ -170,14 +180,14 @@ status tc_show_qdisc(const ::std::string& port_name, nlohmann::json& qdiscs) {
 }
 
 status tc_add_qdisc_clsact(const ::std::string& port_name) {
-  auto cmd = "tc qdisc add dev " + port_name + " clsact";
+  auto cmd = "/usr/sbin/tc qdisc add dev " + port_name + " clsact";
   auto p   = program::execute(cmd);
 
   return get_status_from_tc_program(p);
 }
 
 status tc_delete_qdisc_clsact(const ::std::string& port_name) {
-  auto cmd = "tc qdisc del dev " + port_name + " clsact";
+  auto cmd = "/usr/sbin/tc qdisc del dev " + port_name + " clsact";
   auto p   = program::execute(cmd);
 
   return get_status_from_tc_program(p);
@@ -201,20 +211,19 @@ status tc_show_ingress_filter(const ::std::string& port_name, nlohmann::json& in
 }
 
 status tc_change_ingress_rate_filter(const tc_filter_ref& filter_ref, const ::std::string& port_name,
-                                     const ::std::string& unit, const ::std::string& value,
-                                     const ::std::string& dst_mac) {
+                                     const ::std::string& value, const ::std::string& dst_mac, rate_type rt) {
   auto pref   = ::std::to_string(filter_ref.pref);
   auto handle = ::std::to_string(filter_ref.handle);
-  auto cmd    = build_tc_change_filter_cmd(port_name, pref, handle, build_tc_ingress_rate_cmd(dst_mac, unit, value));
+  auto cmd    = build_tc_change_filter_cmd(port_name, pref, handle, build_tc_ingress_rate_cmd(dst_mac, value, rt));
   auto p      = program::execute(cmd);
 
   return get_status_from_tc_program(p);
 }
 
-status tc_add_ingress_rate_filter(const ::std::string& port_name, const ::std::string& unit, const ::std::string& value,
-                                  const ::std::string& dst_mac) {
-  auto cmd = build_tc_add_filter_cmd(port_name, build_tc_ingress_rate_cmd(dst_mac, unit, value));
-  auto p   = program::execute(cmd);
+status tc_add_ingress_rate_filter(const ::std::string& port_name, const ::std::string& value,
+                                  const ::std::string& dst_mac, rate_type rt) {
+  auto cmd = build_tc_add_filter_cmd(port_name, build_tc_ingress_rate_cmd(dst_mac, value, rt));
+  auto p = program::execute(cmd);
 
   return get_status_from_tc_program(p);
 }
@@ -248,9 +257,13 @@ status tc_delete_ingress_filter(const tc_filter_ref& filter_ref, const ::std::st
 }
 
 status tc_add_mirror(const ::std::string& src_port_name, const ::std::string& dst_port_name,
-                     const ::std::string& direction) {
+                     const ::std::string& direction, switch_type switch_type) {
+  auto skip_sw = "";
+  if (switch_type != switch_type::TI) {
+    skip_sw = "skip_sw ";
+  }
   auto cmd =
-      build_tc_add_filter_cmd(src_port_name, direction + " matchall action mirred egress mirror dev " + dst_port_name);
+      build_tc_add_filter_cmd(src_port_name, direction + " matchall " + skip_sw + "action mirred egress mirror dev " + dst_port_name);
   auto p = program::execute(cmd);
 
   return get_status_from_tc_program(p);

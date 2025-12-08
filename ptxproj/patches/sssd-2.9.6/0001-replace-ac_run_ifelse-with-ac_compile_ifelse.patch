@@ -1,0 +1,31 @@
+From: unknown author <unknown.author@example.com>
+Date: Mon, 13 Nov 2023 09:54:10 +0100
+Subject: [PATCH] replace ac_run_ifelse with ac_compile_ifelse
+
+---
+ src/external/ldap.m4 | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/src/external/ldap.m4 b/src/external/ldap.m4
+index f42023cd44e4..5adb6c2260b4 100644
+--- a/src/external/ldap.m4
++++ b/src/external/ldap.m4
+@@ -70,7 +70,7 @@ AC_CHECK_FUNCS([ldap_control_create ldap_init_fd \
+                 ldap_derefresponse_free \
+                 ldap_is_ldapc_url])
+ AC_CHECK_MEMBERS([struct ldap_conncb.lc_arg],
+-                 [AC_RUN_IFELSE(
++                 [AC_COMPILE_IFELSE(
+                    [AC_LANG_PROGRAM(
+                      [[ #include <ldap.h> ]],
+                      [[
+@@ -79,8 +79,7 @@ AC_CHECK_MEMBERS([struct ldap_conncb.lc_arg],
+                      ]] )],
+                    [AC_DEFINE([HAVE_LDAP_CONNCB], [1],
+                      [Define if LDAP connection callbacks are available])],
+-                   [AC_MSG_WARN([Found broken callback implementation])],
+-                   [])],
++                   [AC_MSG_WARN([Found broken callback implementation])],)],
+                  [], [[#include <ldap.h>]])
+ 
+ AC_CHECK_TYPE([LDAPDerefRes],

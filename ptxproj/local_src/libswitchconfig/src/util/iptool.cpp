@@ -17,7 +17,7 @@ namespace wago::libswitchconfig {
 namespace {
 
 status get_config(nlohmann::json& ports) {
-  auto cmd = "ip -json link show";
+  auto cmd = "/usr/sbin/ip -json link show";
   auto p   = program::execute(cmd);
   if (p.get_result() == 0) {
     ports = nlohmann::json::parse(p.get_stdout());
@@ -58,7 +58,7 @@ status get_system_ports(::std::vector<system_port>& ports) {
   }
 
   if (s.ok()) {
-    ::std::copy_if(all_ports.begin(), all_ports.end(), std::back_inserter(ports), 
+    ::std::copy_if(all_ports.begin(), all_ports.end(), std::back_inserter(ports),
         [](const auto& p){return p.name.rfind("ethX", 0) == 0;}
     );
   }

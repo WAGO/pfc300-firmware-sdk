@@ -28,6 +28,8 @@ $(STATEDIR)/blspec-uboot.targetinstall:
 
 	@$(call install_alternative, blspec-uboot, 0, 0, 0644, \
 		/boot/extlinux/extlinux.conf)
+		
+	@$(call install_copy, blspec-uboot, 0, 0, 0644, $(LICENSES_PATH)/u-boot/license.blspec-uboot_$(BLSPEC_UBOOT_VERSION).txt, $(LICENSES_TARGET_DIR)/oss/license.blspec-uboot_$(BLSPEC_UBOOT_VERSION).txt)
 
 	@$(call install_finish,blspec-uboot)
 

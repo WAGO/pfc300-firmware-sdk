@@ -1,0 +1,63 @@
+From: unknown author <unknown.author@example.com>
+Date: Mon, 12 Sep 2022 08:39:41 +0200
+Subject: [PATCH] source3/modules/wscript_build: to remove dependency cmocka,
+ remove tests
+
+---
+ source3/modules/wscript_build | 22 ----------------------
+ 1 file changed, 22 deletions(-)
+
+diff --git a/source3/modules/wscript_build b/source3/modules/wscript_build
+index 1f0aa44ff1bb..e3a561310cc2 100644
+--- a/source3/modules/wscript_build
++++ b/source3/modules/wscript_build
+@@ -4,11 +4,6 @@ bld.SAMBA3_SUBSYSTEM('NFS4_ACLS',
+                     source='nfs4_acls.c',
+                     deps='samba-util tdb')
+ 
+-bld.SAMBA3_BINARY('test_nfs4_acls',
+-                  source='test_nfs4_acls.c',
+-                  deps='smbd_base cmocka',
+-                  for_selftest=True)
+-
+ bld.SAMBA3_SUBSYSTEM('vfs_acl_common',
+                      source='vfs_acl_common.c',
+                      deps='gnutls')
+@@ -95,11 +90,6 @@ bld.SAMBA3_MODULE('vfs_full_audit',
+                  internal_module=bld.SAMBA3_IS_STATIC_MODULE('vfs_full_audit'),
+                  enabled=bld.SAMBA3_IS_ENABLED_MODULE('vfs_full_audit'))
+ 
+-bld.SAMBA3_BINARY('test_vfs_full_audit',
+-                  source='test_vfs_full_audit.c',
+-                  deps='smbd_base cmocka',
+-                  for_selftest=True)
+-
+ bld.SAMBA3_MODULE('vfs_fake_perms',
+                  subsystem='vfs',
+                  source='vfs_fake_perms.c',
+@@ -222,11 +212,6 @@ bld.SAMBA3_MODULE('vfs_posixacl',
+                  internal_module=bld.SAMBA3_IS_STATIC_MODULE('vfs_posixacl'),
+                  enabled=bld.SAMBA3_IS_ENABLED_MODULE('vfs_posixacl'))
+ 
+-bld.SAMBA3_BINARY('test_vfs_posixacl',
+-                  source='test_vfs_posixacl.c',
+-                  deps='smbd_base cmocka',
+-                  for_selftest=True)
+-
+ bld.SAMBA3_MODULE('vfs_aixacl',
+                  subsystem='vfs',
+                  source='vfs_aixacl.c',
+@@ -366,13 +351,6 @@ bld.SAMBA3_MODULE('vfs_gpfs',
+                  enabled=bld.SAMBA3_IS_ENABLED_MODULE('vfs_gpfs'),
+                  includes=bld.CONFIG_GET('CPPPATH_GPFS'))
+ 
+-bld.SAMBA3_BINARY('test_vfs_gpfs',
+-                  source='test_vfs_gpfs.c',
+-                  deps='NFS4_ACLS non_posix_acls gpfswrap cmocka',
+-                  for_selftest=True,
+-                  enabled=bld.SAMBA3_IS_ENABLED_MODULE('vfs_gpfs'),
+-                  includes=bld.CONFIG_GET('CPPPATH_GPFS'))
+-
+ bld.SAMBA3_MODULE('vfs_readahead',
+                  subsystem='vfs',
+                  source='vfs_readahead.c',

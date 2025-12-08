@@ -1,0 +1,32 @@
+From: unknown author <unknown.author@example.com>
+Date: Mon, 12 Sep 2022 08:39:41 +0200
+Subject: [PATCH] libcli/ldap/wscript_build: to remove dependency cmocka,
+ remove tests
+
+---
+ libcli/ldap/wscript_build | 15 ---------------
+ 1 file changed, 15 deletions(-)
+
+diff --git a/libcli/ldap/wscript_build b/libcli/ldap/wscript_build
+index a646685c7510..db5b1df497a7 100644
+--- a/libcli/ldap/wscript_build
++++ b/libcli/ldap/wscript_build
+@@ -6,18 +6,3 @@ bld.SAMBA_LIBRARY('cli-ldap-common',
+                   private_headers='ldap_message.h ldap_errors.h ldap_ndr.h',
+                   deps='samba-util asn1util NDR_SECURITY tevent',
+                   private_library=True)
+-
+-bld.SAMBA_BINARY(
+-    'test_ldap_message',
+-    source='tests/ldap_message_test.c',
+-    deps='''
+-        cmocka
+-        talloc
+-        ldb
+-        samba-util
+-        asn1util
+-        NDR_SECURITY
+-        cli-ldap
+-    ''',
+-    for_selftest=True
+-)

@@ -22,7 +22,7 @@ KERNEL_FIT_PRODUCTION_KEY_NAME_HINT	:= image-kernel-fit-production
 endif
 KERNEL_FIT_PRODUCTION_KERNEL		 = $(KERNEL_IMAGE_PATH_y)
 KERNEL_FIT_PRODUCTION_INITRAMFS		:= $(IMAGEDIR)/root-setupfw.cpio.gz
-KERNEL_FIT_PRODUCTION_DTB		 = $(IMAGEDIR)/$(KERNEL_DTB_FILES)
+KERNEL_FIT_PRODUCTION_DTB			 = $(addprefix $(IMAGEDIR)/,$(KERNEL_DTB_FILES))
 
 # ----------------------------------------------------------------------------
 # Target-Install

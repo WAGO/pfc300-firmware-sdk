@@ -13,16 +13,25 @@ function log
     /usr/bin/logger -s -t networking-finish "$@"
 }
 
+function networking_finish
+{
+    log "networking finish"
+
+    [ -e  /etc/config-tools/config_switch ] && /etc/config-tools/config_switch --init
+}
 
 case "$1" in
 start)
+    networking_finish
     /etc/config-tools/config_eth_leds 
     ;;
 stop)
     ;;
 reload)
+    networking_finish
     ;;
 restart|force-reload)
+    networking_finish
     ;;
 *)
     N=$BASH_COMMAND

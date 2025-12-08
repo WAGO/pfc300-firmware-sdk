@@ -14,14 +14,15 @@ PACKAGES-$(PTXCONF_SSSD) += sssd
 #
 # Paths and names
 #
-SSSD_VERSION	:= 2.6.3
-SSSD_MD5	:= 1c74763e6caccb78f8fe9c8c4dc65689
+SSSD_VERSION	:= 2.9.6
+SSSD_MD5	:= d853ac26b9a684da2da510ada437cca8
 SSSD		:= sssd-$(SSSD_VERSION)
 SSSD_SUFFIX	:= tar.gz
-SSSD_URL	:= https://github.com/SSSD/sssd/archive/refs/tags/$(SSSD_VERSION).$(SSSD_SUFFIX)
+SSSD_URL	:= https://github.com/SSSD/sssd/releases/download/$(SSSD_VERSION)/$(SSSD).$(SSSD_SUFFIX)
 SSSD_SOURCE	:= $(SRCDIR)/$(SSSD).$(SSSD_SUFFIX)
 SSSD_DIR	:= $(BUILDDIR)/$(SSSD)
 SSSD_LICENSE	:= GPL-3.0-or-later
+SSSD_DEVPKG := NO
 
 # ----------------------------------------------------------------------------
 # Get
@@ -40,7 +41,7 @@ $(STATEDIR)/sssd.extract: $(STATEDIR)/autogen-tools
 	@$(call clean, $(SSSD_DIR))
 	@$(call extract, SSSD)
 	@$(call patchin, SSSD)
-	@cd $(SSSD_DIR) && [ -f configure ] || (autoreconf --install --force)
+	@cd $(SSSD_DIR) && autoreconf --install --force
 	@$(call touch)
 
 # ----------------------------------------------------------------------------
@@ -68,7 +69,6 @@ SSSD_CONF_OPT	:=  \
 	--disable-rpath \
 	--enable-nsslibdir=/usr/lib/ \
 	--enable-pammoddir=/usr/lib/security/ \
-	--disable-all-experimental-features \
 	--disable-cifs-idmap-plugin \
 	--disable-valgrind \
 	--disable-valgrind-memcheck \
@@ -86,10 +86,12 @@ SSSD_CONF_OPT	:=  \
 	--with-syslog=syslog \
 	--with-samba \
 	--with-ldb-lib-dir=/usr/modules/ldb/ \
+	--with-oidc-child=no \
 	--with-smb-idmap-interface-version=6 \
 	--without-libnl \
 	--with-initscript=sysv \
-	NSUPDATE=/usr/sbin/nsupdate
+	NSUPDATE=/usr/sbin/nsupdate \
+	SERVICE=/does/not/exist
 
 SSSD_LDFLAGS	:=  \
 	-Wl,-rpath-link,$(PTXCONF_SYSROOT_TARGET)/usr/lib/samba
@@ -189,7 +191,6 @@ $(STATEDIR)/sssd.targetinstall:
 	@$(call install_lib, sssd, 0, 0, 0644, libsss_idmap)
 	@$(call install_lib, sssd, 0, 0, 0644, libsss_nss_idmap)
 	@$(call install_lib, sssd, 0, 0, 0644, libsss_certmap)
-	@$(call install_lib, sssd, 0, 0, 0644, libsss_simpleifp)
 	@$(call install_lib, sssd, 0, 0, 0644, libsss_sudo)
 	@$(call install_lib, sssd, 0, 0, 0644, libnss_sss)
 
@@ -216,7 +217,6 @@ $(STATEDIR)/sssd.targetinstall:
 #	#
 	@$(call install_copy, sssd, 0, 0, 0644, -, /usr/lib/sssd/libsss_simple.so)
 	@$(call install_copy, sssd, 0, 0, 0644, -, /usr/lib/sssd/libsss_ldap.so)
-	@$(call install_copy, sssd, 0, 0, 0644, -, /usr/lib/sssd/libsss_files.so)
 	@$(call install_copy, sssd, 0, 0, 0644, -, /usr/lib/sssd/libsss_krb5.so)
 	@$(call install_copy, sssd, 0, 0, 0644, -, /usr/lib/sssd/libsss_proxy.so)
 	@$(call install_copy, sssd, 0, 0, 0644, -, /usr/lib/sssd/libsss_ad.so)

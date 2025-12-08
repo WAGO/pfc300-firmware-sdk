@@ -1,0 +1,25 @@
+From: unknown author <unknown.author@example.com>
+Date: Mon, 12 Sep 2022 08:39:41 +0200
+Subject: [PATCH] lib/crypto/wscript: to remove dependency cmocka, remove tests
+
+---
+ lib/crypto/wscript | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/lib/crypto/wscript b/lib/crypto/wscript
+index ca7fe869cf1b..4ac2faa72da2 100644
+--- a/lib/crypto/wscript
++++ b/lib/crypto/wscript
+@@ -33,12 +33,3 @@ def build(bld):
+                      source='py_crypto.c',
+                      deps='gnutls talloc LIBCLI_AUTH',
+                      realname='samba/crypto.so')
+-
+-    bld.SAMBA_BINARY('test_gnutls_aead_aes_256_cbc_hmac_sha512',
+-                     source='''
+-                            gnutls_error.c
+-                            tests/test_gnutls_aead_aes_256_cbc_hmac_sha512.c
+-                            ''',
+-                     deps='cmocka gnutls samba-util samba-errors',
+-                     local_include=False,
+-                     for_selftest=True)

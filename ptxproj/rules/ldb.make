@@ -14,8 +14,8 @@ PACKAGES-$(PTXCONF_LDB) += ldb
 #
 # Paths and names
 #
-LDB_VERSION		:= 2.2.0
-LDB_MD5			:= 8b26c52a86826044b5cf145bb8242b93
+LDB_VERSION		:= 2.8.2
+LDB_MD5			:= c98dce60cddb3cb5cd62cdd09c421f62
 LDB			:= ldb-$(LDB_VERSION)
 LDB_SUFFIX		:= tar.gz
 LDB_URL			:= https://www.samba.org/ftp/ldb/$(LDB).$(LDB_SUFFIX)
@@ -38,7 +38,9 @@ LDB_CONF_OPT	:=  \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib \
+	--with-privatelibdir=/usr/lib \
 	--bundled-libraries=NONE \
+	--builtin-libraries=NONE \
 	--disable-rpath \
 	--disable-rpath-install \
 	--disable-rpath-private-install \
@@ -51,6 +53,9 @@ LDB_CONF_OPT	:=  \
 	--cross-answers=$(LDB_DIR)/cross-answers \
 	--without-ldb-lmdb
 
+LDB_CONF_ENV := \
+       $(CROSS_ENV) \
+       PYTHONHASHSEED=1
 
 $(STATEDIR)/ldb.prepare:
 	@$(call targetinfo)
@@ -79,14 +84,11 @@ $(STATEDIR)/ldb.targetinstall:
 #	# install /usr/lib/*
 #	#
 	@$(call install_lib, ldb, 0, 0, 0644, libldb)
-
-#	#
-#	# install /usr/lib/*
-#	#
-	@$(call install_copy, ldb, 0, 0, 0644, $(LDB_DIR)/bin/default/libldb-cmdline.so, /usr/lib/libldb-cmdline.so)
-	@$(call install_copy, ldb, 0, 0, 0644, $(LDB_DIR)/bin/default/libldb-key-value.so, /usr/lib/libldb-key-value.so)
-	@$(call install_copy, ldb, 0, 0, 0644, $(LDB_DIR)/bin/default/libldb-tdb-err-map.so, /usr/lib/libldb-tdb-err-map.so)
-	@$(call install_copy, ldb, 0, 0, 0644, $(LDB_DIR)/bin/default/libldb-tdb-int.so, /usr/lib/libldb-tdb-int.so)
+	@$(call install_copy, ldb, 0, 0, 0644, -, /usr/lib/libreplace-ldb.so)
+	@$(call install_copy, ldb, 0, 0, 0644, -, /usr/lib/libldb-key-value.so)
+	@$(call install_copy, ldb, 0, 0, 0644, -, /usr/lib/libldb-cmdline.so)
+	@$(call install_copy, ldb, 0, 0, 0644, -, /usr/lib/libldb-tdb-err-map.so)
+	@$(call install_copy, ldb, 0, 0, 0644, -, /usr/lib/libldb-tdb-int.so)
 
 #	#
 #	# install /usr/modules/ldb/*
@@ -105,12 +107,14 @@ $(STATEDIR)/ldb.targetinstall:
 #	#
 #	# install /usr/bin/*
 #	#
+ifdef PTXCONF_LDB_INSTALL_TOOLS
 	@$(call install_copy, ldb, 0, 0, 0755, -, /usr/bin/ldbadd)
 	@$(call install_copy, ldb, 0, 0, 0755, -, /usr/bin/ldbsearch)
 	@$(call install_copy, ldb, 0, 0, 0755, -, /usr/bin/ldbdel)
 	@$(call install_copy, ldb, 0, 0, 0755, -, /usr/bin/ldbmodify)
 	@$(call install_copy, ldb, 0, 0, 0755, -, /usr/bin/ldbedit)
 	@$(call install_copy, ldb, 0, 0, 0755, -, /usr/bin/ldbrename)
+endif
 
 	@$(call install_finish, ldb)
 

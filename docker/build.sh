@@ -39,7 +39,7 @@ case "$1" in
         ptxdist get -q
         ;;
     images)
-        ptxdist images -q
+        ptxdist images -q -j -n19
         ;;
     wup)
         make wup

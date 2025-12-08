@@ -34,7 +34,7 @@ struct storm_protection {
 
   ::std::vector<port> ports;
   ::std::string unit;
-  ::std::uint16_t value = 0;
+  ::std::uint32_t value = 0;
 };
 
 struct port_mirror {
@@ -54,7 +54,8 @@ struct port_mirror {
 struct switch_config {
   bool operator==(const switch_config& other) const {
     return version == other.version && broadcast_protection == other.broadcast_protection &&
-           multicast_protection == other.multicast_protection && port_mirroring == other.port_mirroring;
+           multicast_protection == other.multicast_protection && port_mirroring == other.port_mirroring &&
+           multicast_protection_enabled == other.multicast_protection_enabled;
   }
 
   bool operator!=(const switch_config& other) const {
@@ -65,12 +66,15 @@ struct switch_config {
   storm_protection broadcast_protection;
   storm_protection multicast_protection;
   port_mirror port_mirroring;
+
+  // only micrel switch specific parameter
+  bool multicast_protection_enabled = false;
 };
 
 struct supported_values {
   ::std::uint8_t version = 0;
-  ::std::vector<::std::uint16_t> broadcast_protection_values;
-  ::std::vector<::std::uint16_t> multicast_protection_values;
+  ::std::vector<::std::uint32_t> broadcast_protection_values;
+  ::std::vector<::std::uint32_t> multicast_protection_values;
 };
 
 enum class status_code : ::std::uint32_t {
@@ -112,6 +116,15 @@ class status {
   status_code s_code = status_code::OK;
   ::std::string s_msg;
 };
+
+enum class switch_type : ::std::uint32_t {
+  UNKNOWN = 0,
+  MICREL  = 1,
+  MARVELL  = 2,
+  TI      = 3,
+};
+
+status get_switch_type(switch_type& st);
 
 status switch_config_to_json(::nlohmann::json& j, const switch_config& config);
 status switch_config_from_json(switch_config& config, const ::nlohmann::json& j);

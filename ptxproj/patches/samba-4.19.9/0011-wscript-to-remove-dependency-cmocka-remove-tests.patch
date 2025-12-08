@@ -1,0 +1,24 @@
+From: unknown author <unknown.author@example.com>
+Date: Mon, 12 Sep 2022 08:39:41 +0200
+Subject: [PATCH] wscript: to remove dependency cmocka, remove tests
+
+---
+ wscript | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/wscript b/wscript
+index dab97d13c24e..42ddeb2689d8 100644
+--- a/wscript
++++ b/wscript
+@@ -233,11 +233,6 @@ def configure(conf):
+         else:
+             conf.define('USING_SYSTEM_POPT', 1)
+ 
+-        if not conf.CHECK_CMOCKA():
+-            raise Errors.WafError('cmocka development packages has not been found.\nIf third_party is installed, check that it is in the proper place.')
+-        else:
+-            conf.define('USING_SYSTEM_CMOCKA', 1)
+-
+         if conf.CONFIG_GET('ENABLE_SELFTEST'):
+             if not conf.CHECK_SOCKET_WRAPPER():
+                 raise Errors.WafError('socket_wrapper package has not been found.\nIf third_party is installed, check that it is in the proper place.')

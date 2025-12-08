@@ -1,0 +1,29 @@
+From: unknown author <unknown.author@example.com>
+Date: Mon, 12 Sep 2022 08:39:41 +0200
+Subject: [PATCH] third_party/wscript: to remove dependency cmocka, remove
+ tests
+
+---
+ third_party/wscript | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/third_party/wscript b/third_party/wscript
+index e95bc3194ce0..7b65f7f2e275 100644
+--- a/third_party/wscript
++++ b/third_party/wscript
+@@ -3,7 +3,6 @@
+ from waflib import Options
+ 
+ def configure(conf):
+-    conf.RECURSE('cmocka')
+     conf.RECURSE('popt')
+     if conf.CONFIG_GET('ENABLE_SELFTEST'):
+         conf.RECURSE('socket_wrapper')
+@@ -15,7 +14,6 @@ def configure(conf):
+ 
+ 
+ def build(bld):
+-    bld.RECURSE('cmocka')
+     bld.RECURSE('popt')
+     if bld.CONFIG_GET('SOCKET_WRAPPER'):
+         bld.RECURSE('socket_wrapper')
