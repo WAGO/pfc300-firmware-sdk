@@ -254,14 +254,18 @@ Read "How to become a PTXdist Guru" and other ressources at http://public.pengut
 Building a complete firmware image is necessary exactly one time, to extract
 and build the whole system. For your daily work, you usually will work on package level.
 After entering the pfc-builder (```make bash```), you can:
+- Open the menuconfig dialog to include/exclude a package
+```
+    ptxdist menuconfig
+```
 - Rebuild a package
 ```
-    >ptxdist clean <pkg-name> && ptxdist targetinstall <pkg-name>
+    ptxdist clean <pkg-name> && ptxdist targetinstall <pkg-name>
 ```
 - Copy "binaries" somehow by hand into PFC's file system, and make them executable.
 - Transfer install-package "<pkg-name>.ipk" somehow into PFC file system and call
 ```
-    >opkg install <pkg-name>.ipk
+    opkg install <pkg-name>.ipk
 ```
 - Utilize Web-Based-Management(WBM) feature "Software-Upload" to upload and apply "<pkg-name>.ipk".
 
